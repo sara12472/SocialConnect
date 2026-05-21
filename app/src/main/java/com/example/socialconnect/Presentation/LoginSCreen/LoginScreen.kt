@@ -97,7 +97,7 @@ fun LoginScreen(
 
         AppButton(
             text = "Login",
-            onClick = viewModel::onLoginClick,
+            onClick ={navController.navigate(Screen.HomeScreen.route)},
             modifier = Modifier.fillMaxWidth()
         )
 

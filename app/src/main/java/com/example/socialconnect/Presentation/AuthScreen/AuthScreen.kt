@@ -99,9 +99,7 @@ fun AuthScreen(navController: NavController,
                     Text(text="Already have an account? ",
                         color = MaterialTheme.colorScheme.onPrimary,
                         style = MaterialTheme.typography.labelSmall
-
-
-                        )
+                    )
 
                     Text(
                         text = " Login",
