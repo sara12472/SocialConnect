@@ -1,7 +1,7 @@
 package com.example.socialconnect.Presentation.HomeScreen
 
-import com.example.socialconnect.Data.Post
-import com.example.socialconnect.Data.Story
+import com.example.socialconnect.Data.Model.Post
+import com.example.socialconnect.Data.Model.Story
 
 data class HomeState(
 

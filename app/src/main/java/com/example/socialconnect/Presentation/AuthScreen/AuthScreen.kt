@@ -1,5 +1,8 @@
 package com.example.socialconnect.Presentation.AuthScreen
 
+import android.app.Activity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import com.example.socialconnect.R
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,12 +35,61 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.socialconnect.Component.AppButton
 import com.example.socialconnect.Navigation.Screen
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.common.api.ApiException
 
 @Composable
 fun AuthScreen(navController: NavController,
     viewModel: AuthViewModel= hiltViewModel()
 ){
     val state = viewModel.state.collectAsState().value
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+
+        if (result.resultCode == Activity.RESULT_OK) {
+
+            try {
+
+                val task = GoogleSignIn
+                    .getSignedInAccountFromIntent(result.data)
+
+                val account =
+                    task.getResult(ApiException::class.java)
+
+                val idToken = account.idToken
+
+                if (idToken != null) {
+                    viewModel.handleGoogleSignIn(idToken)
+                }
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+    LaunchedEffect(Unit) {
+
+        viewModel.googleSignInIntent.collect { intent ->
+
+            if (intent != null) {
+                launcher.launch(intent)
+            }
+        }
+    }
+    LaunchedEffect(state.success) {
+
+        if (state.success) {
+
+            navController.navigate(Screen.HomeScreen.route) {
+
+                popUpTo(Screen.AuthScreen.route) {
+                    inclusive = true
+                }
+            }
+        }
+    }
 
     BoxWithConstraints(
         modifier = Modifier.fillMaxSize()
@@ -77,7 +130,7 @@ fun AuthScreen(navController: NavController,
                 AppButton(
                     text = "Continue with Google",
                     containerColor = MaterialTheme.colorScheme.onBackground,
-                    onClick = { viewModel.onGoogleClick() }
+                    onClick = { viewModel.signInWithGoogle() }
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))

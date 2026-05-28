@@ -1,4 +1,4 @@
-package com.example.socialconnect.Data
+package com.example.socialconnect.Data.Model
 import com.example.socialconnect.R
 
 data class Story(

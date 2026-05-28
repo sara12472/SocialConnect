@@ -45,9 +45,10 @@ fun AppTextField(
 
         modifier = modifier,
 
-        placeholder = {
+        label = {
             Text(text = hint)
         },
+
 
         shape = RoundedCornerShape(14.dp),
 

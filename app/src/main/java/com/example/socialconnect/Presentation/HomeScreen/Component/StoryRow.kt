@@ -9,7 +9,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.socialconnect.Data.Story
+import com.example.socialconnect.Data.Model.Story
 
 @Composable
 fun StoryRow(

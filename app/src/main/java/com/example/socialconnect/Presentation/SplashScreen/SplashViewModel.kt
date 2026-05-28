@@ -2,7 +2,7 @@ package com.example.socialconnect.Presentation.SplashScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.socialconnect.Data.SplashState
+import com.example.socialconnect.Presentation.SplashScreen.SplashState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow

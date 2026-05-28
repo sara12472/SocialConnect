@@ -1,6 +1,5 @@
-package com.example.socialconnect.Data
+package com.example.socialconnect.Data.Model
 
-import androidx.annotation.DrawableRes
 import com.example.socialconnect.R
 
 data class Post(val id: Int,

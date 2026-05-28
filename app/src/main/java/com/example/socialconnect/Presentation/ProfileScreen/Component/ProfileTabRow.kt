@@ -1,6 +1,7 @@
 package com.example.socialconnect.Presentation.ProfileScreen.Component
 
 
+import android.R
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.GridOn
@@ -38,6 +39,8 @@ fun ProfileTabSection(
                 Icon(
                     imageVector = Icons.Outlined.GridOn,
                     contentDescription = "Posts",
+                    tint = MaterialTheme.colorScheme.onBackground
+
 
                 )
             }
@@ -53,7 +56,8 @@ fun ProfileTabSection(
             icon = {
                 Icon(
                     imageVector = Icons.Outlined.SmartDisplay,
-                    contentDescription = "Videos"
+                    contentDescription = "Videos",
+                    tint = MaterialTheme.colorScheme.onBackground
                 )
             }
         )

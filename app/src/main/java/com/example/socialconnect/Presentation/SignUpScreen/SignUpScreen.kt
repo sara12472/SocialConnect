@@ -1,5 +1,6 @@
 package com.example.socialconnect.Presentation.SignUpScreen
 
+import android.R.attr.text
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,10 +18,18 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import com.example.socialconnect.R
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,117 +50,215 @@ import com.example.socialconnect.ui.theme.ElectricBlue
  viewModel: SignUpViewModel = hiltViewModel()
  ){
  val state = viewModel.state.collectAsState().value
-
- BoxWithConstraints(
-  modifier = Modifier.fillMaxSize()
- ) {
-
-  val isTablet = maxWidth >= 600.dp
-
-  val horizontalPadding = if (isTablet) 64.dp else 24.dp
-  val formWidth = if (isTablet) 420.dp else maxWidth
-
-  Column(
-   modifier = Modifier
-    .fillMaxSize()
-    .padding(horizontalPadding)
-    .navigationBarsPadding()
-    .imePadding(),
-   verticalArrangement = Arrangement.Center,
-   horizontalAlignment = Alignment.CenterHorizontally
-  ) {
-
-   // 🔵 TITLE
-   Text(
-    text = "Create Account",
-    style = MaterialTheme.typography.headlineMedium,
-    color = MaterialTheme.colorScheme.onPrimary
-   )
-
-   Spacer(modifier = Modifier.height(4.dp))
-
-   Text(
-    text = "Join SocialConnect Today!",
-    color = MaterialTheme.colorScheme.primary,
-    style = MaterialTheme.typography.bodyMedium
-   )
-
-   Spacer(modifier = Modifier.height(20.dp))
-
-   // 🔵 FORM CONTAINER (IMPORTANT FOR TABLETS)
-   Column(
-    modifier = Modifier.width(formWidth),
-    verticalArrangement = Arrangement.Center
-   ) {
-
-    AppTextField(
-     value = state.firstName,
-     onValueChange = viewModel::onFirstNameChange,
-     hint = "First Name",
-     modifier = Modifier.fillMaxWidth()
-    )
-
-    Spacer(modifier = Modifier.height(12.dp))
-
-    AppTextField(
-     value = state.email,
-     onValueChange = viewModel::onEmailChange,
-     hint = "Email",
-     modifier = Modifier.fillMaxWidth()
-    )
-
-    Spacer(modifier = Modifier.height(12.dp))
-
-    AppTextField(
-     value = state.password,
-     onValueChange = viewModel::onPasswordChange,
-     hint = "Password",
-     isPassword = true,
-     modifier = Modifier.fillMaxWidth()
-    )
-
-    Spacer(modifier = Modifier.height(12.dp))
-
-    AppTextField(
-     value = state.confirmPassword,
-     onValueChange = viewModel::onConfirmPasswordChange,
-     hint = "Confirm Password",
-     isPassword = true,
-     modifier = Modifier.fillMaxWidth()
-    )
-
-    Spacer(modifier = Modifier.height(22.dp))
-
-    AppButton(
-     text = "SignUp",
-     onClick = viewModel::onSignUpClick,
-     modifier = Modifier.fillMaxWidth(),
-    )
-
-    Spacer(modifier = Modifier.height(16.dp))
-
-    Row(
-     horizontalArrangement = Arrangement.Center,
-     modifier = Modifier.fillMaxWidth()
-    ) {
-     Text(text="Already have an account? ",
-      color = MaterialTheme.colorScheme.onPrimary,
-      style = MaterialTheme.typography.labelSmall
-      )
-
-     Text(
-      text = "Login",
-      color = MaterialTheme.colorScheme.primary,
-      style = MaterialTheme.typography.labelSmall,
-      modifier = Modifier.clickable {
-       navController.navigate(Screen.LoginScreen.route)
-      }
-     )
+ LaunchedEffect(state.success) {
+  if (state.success) {
+   navController.navigate(Screen.LoginScreen.route) {
+    popUpTo(Screen.SignUpScreen.route) {
+     inclusive = true
     }
    }
   }
  }
-}
+ Scaffold(
+  modifier = Modifier.fillMaxSize()
+ ) { paddingValues ->
+
+  Column(
+   modifier = Modifier
+    .fillMaxSize()
+    .padding(paddingValues)
+    .padding(horizontal = 16.dp)
+  ) {
+
+   //  TOP BAR
+   Row(
+    modifier = Modifier
+     .fillMaxWidth()
+     .padding(top = 12.dp),
+    verticalAlignment = Alignment.CenterVertically
+   ) {
+
+    Icon(
+     imageVector = Icons.Default.ArrowBack,
+     contentDescription = "Back",
+     modifier = Modifier.clickable {
+      if (state.step > 1) {
+       viewModel.previousStep()
+      } else {
+       navController.popBackStack()
+      }
+     }
+    )
+
+    Spacer(modifier = Modifier.weight(1f))
+
+    Text(
+     text = "Create Account",
+     style = MaterialTheme.typography.titleLarge
+    )
+
+    Spacer(modifier = Modifier.weight(1f))
+   }
+
+   // STEP INDICATOR
+   Text(
+    text = "Step ${state.step} of 4",
+    modifier = Modifier
+     .align(Alignment.CenterHorizontally)
+     .padding(top = 8.dp),
+    color = MaterialTheme.colorScheme.primary
+   )
+
+   Spacer(modifier = Modifier.height(20.dp))
+
+   //  CENTER CONTENT
+   Box(
+    modifier = Modifier
+     .fillMaxWidth()
+     .weight(1f),
+    contentAlignment = Alignment.Center
+   ) {
+
+    Column(
+     modifier = Modifier.fillMaxWidth(),
+     horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+     when (state.step) {
+
+      1 -> {
+       AppTextField(
+        value = state.name,
+        onValueChange = viewModel::onNameChange,
+        hint = "Enter your name",
+        modifier = Modifier.fillMaxWidth()
+       )
+      }
+
+      2 -> {
+       AppTextField(
+        value = state.userName,
+        onValueChange = viewModel::onUserNameChange,
+        hint = "Enter username",
+        modifier = Modifier.fillMaxWidth()
+       )
+      }
+
+      3 -> {
+       AppTextField(
+        value = state.email,
+        onValueChange = viewModel::onEmailChange,
+        hint = "Enter email",
+        modifier = Modifier.fillMaxWidth()
+       )
+      }
+
+      4 -> {
+
+       Column {
+
+        AppTextField(
+         value = state.password,
+         onValueChange = viewModel::onPasswordChange,
+         hint = "Password",
+         isPassword = true,
+         modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        AppTextField(
+         value = state.confirmPassword,
+         onValueChange = viewModel::onConfirmPasswordChange,
+         hint = "Confirm Password",
+         isPassword = true,
+         modifier = Modifier.fillMaxWidth()
+        )
+       }
+      }
+     }
+
+   // ERROR
+     state.error?.let {
+      Spacer(modifier = Modifier.height(8.dp))
+
+      Text(
+       text = it,
+       color = MaterialTheme.colorScheme.error,
+       modifier = Modifier
+        .fillMaxWidth()
+        .padding(start = 4.dp)
+      )
+     }
+
+     // LOADING BELOW ERROR
+     if (state.isLoading) {
+
+      Spacer(modifier = Modifier.height(12.dp))
+
+      CircularProgressIndicator()
+     }
+    }
+   }
+
+   AppButton(
+    onClick = {
+     when (state.step) {
+
+      1 -> {
+       if (state.name.isBlank()) {
+        viewModel.setError("Name is required")
+       } else {
+        viewModel.clearError()
+        viewModel.nextStep()
+       }
+      }
+
+      2 -> {
+       if (state.userName.isBlank()) {
+        viewModel.setError("Username is required")
+       } else {
+        viewModel.clearError()
+        viewModel.nextStep()
+       }
+      }
+
+      3 -> {
+       if (state.email.isBlank()) {
+        viewModel.setError("Email is required")
+       } else {
+        viewModel.clearError()
+        viewModel.nextStep()
+       }
+      }
+
+      4 -> {
+       viewModel.signup()
+      }
+     }
+    },
+    enabled = !state.isLoading,
+    modifier = Modifier
+     .fillMaxWidth()
+     .padding(bottom = 20.dp),
+    text = if (state.step == 4)
+     "Create Account"
+    else
+     "Continue"
+
+   )
+
+
+
+   
+   }
+  }
+ }
+
+
+
+
+
 
 
 

@@ -8,9 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -26,8 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.socialconnect.Data.dummyPosts
-import com.example.socialconnect.Data.dummyStories
+import com.example.socialconnect.Data.Model.dummyPosts
+import com.example.socialconnect.Data.Model.dummyStories
 import com.example.socialconnect.Navigation.Screen
 import com.example.socialconnect.Presentation.HomeScreen.Component.BottomBar
 import com.example.socialconnect.Presentation.HomeScreen.Component.HomeTopBar
