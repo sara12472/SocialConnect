@@ -1,5 +1,6 @@
 package com.example.socialconnect.Data.Repository
 
+
 import com.example.socialconnect.Core.Resource
 import com.example.socialconnect.Data.Model.User
 import com.example.socialconnect.Domain.Repository.AuthRepository
@@ -8,6 +9,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import jakarta.inject.Inject
 import kotlinx.coroutines.tasks.await
+
 
 class AuthRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth,
@@ -111,6 +113,16 @@ class AuthRepositoryImpl @Inject constructor(
             Resource.Error(e.message ?: "Google Sign-In Failed")
         }
     }
-
+    override suspend fun getCurrentUserId(): String? {
+        return auth.currentUser?.uid
+    }
 }
+
+
+
+
+
+
+
+
 

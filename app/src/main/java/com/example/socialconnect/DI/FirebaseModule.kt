@@ -2,7 +2,9 @@ package com.example.socialconnect.DI
 
 import android.content.Context
 import com.example.socialconnect.Data.Repository.AuthRepositoryImpl
+import com.example.socialconnect.Data.Repository.EditProfileRepositoryImpl
 import com.example.socialconnect.Domain.Repository.AuthRepository
+import com.example.socialconnect.Domain.Repository.EditProfileRepository
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -41,6 +43,14 @@ object FirebaseModule {
     ): AuthRepository {
 
         return AuthRepositoryImpl(auth, firestore)
+    }
+    @Provides
+    @Singleton
+    fun provideEditProfileRepository(
+        firestore: FirebaseFirestore
+    ): EditProfileRepository {
+
+        return EditProfileRepositoryImpl(firestore)
     }
     @Provides
     @Singleton

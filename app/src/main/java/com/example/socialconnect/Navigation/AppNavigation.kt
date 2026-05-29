@@ -40,7 +40,7 @@ fun AppNavigation() {
           ProfileScreen(navController)
         }
         composable(Screen.EditProfileScreen.route){
-            EditProfileScreen()
+            EditProfileScreen(navController)
         }
     }
 }

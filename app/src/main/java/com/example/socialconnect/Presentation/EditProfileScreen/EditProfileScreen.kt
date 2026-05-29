@@ -1,6 +1,9 @@
 package com.example.socialconnect.Presentation.EditProfileScreen
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,23 +24,62 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.example.socialconnect.Component.AppTextField
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun EditProfileScreen(
-    viewModel: EditProfileViewModel = hiltViewModel(), ) {
+    navController: NavController,
+    viewModel: EditProfileViewModel = hiltViewModel(),
+
+    ) {
 
     val state by viewModel.state.collectAsState()
+    val context = LocalContext.current
+    val isSaved by viewModel.isSaved.collectAsState()
+    LaunchedEffect(Unit) {
+        viewModel.loadUser()
+    }
+    LaunchedEffect(isSaved) {
+
+        if (isSaved) {
+            navController.popBackStack()
+        }
+    }
+
+
+
+    val launcher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.GetContent()
+        ) { uri ->
+
+            uri?.let {
+
+                viewModel.uploadImage(
+                    it,
+                    context
+                )
+            }
+        }
+
+
+
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background
@@ -50,13 +92,16 @@ fun EditProfileScreen(
                 .padding(horizontal = 16.dp)
         ) {
 
-            // 🔵 TOP BAR
+            //  TOP BAR
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
-                IconButton(onClick = {}) {
+                IconButton(onClick = {
+                    viewModel.saveProfile()
+
+                }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Back"
@@ -72,16 +117,23 @@ fun EditProfileScreen(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            // 🔵 PROFILE IMAGE
+            //  PROFILE IMAGE
             Box(
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Column(modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                    Image(
-                        painter = painterResource(id = state.profileImage),
+                    AsyncImage(
+                        model = if (state.profileImage.isNotEmpty())
+                            state.profileImage
+                        else
+                            "https://i.pravatar.cc/300",
+
                         contentDescription = "Profile",
+                        contentScale = ContentScale.Crop,
+
+
                         modifier = Modifier
                             .size(110.dp)
                             .clip(CircleShape)
@@ -91,11 +143,14 @@ fun EditProfileScreen(
 
                     Text(text = "Edit Picture",
                         style=MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.primary
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.clickable {
+                            launcher.launch("image/*")
+                        }
                     )
                     Spacer(modifier = Modifier.height(25.dp))
 
-                    // 🔵 NAME
+                    // NAME
                     AppTextField(
                         value = state.name,
                         onValueChange = viewModel::onNameChange,
@@ -106,7 +161,7 @@ fun EditProfileScreen(
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    // 🔵 USERNAME
+                    // USERNAME
                     AppTextField(
                         value = state.username,
                         onValueChange = viewModel::onUsernameChange,
@@ -117,7 +172,7 @@ fun EditProfileScreen(
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    // 🔵 BIO
+                    // BIO
                     AppTextField(
                         value = state.bio,
                         onValueChange = viewModel::onBioChange,
@@ -125,6 +180,8 @@ fun EditProfileScreen(
                         modifier = Modifier.fillMaxWidth()
 
                     )
+
+
 
                 }
 
@@ -136,10 +193,13 @@ fun EditProfileScreen(
     }
 }
 
+
+
 @Preview
 @Composable
 fun ShowEditScreen(){
+    val navController= rememberNavController()
    val viewModel: EditProfileViewModel = hiltViewModel()
 
-    EditProfileScreen(viewModel)
+    EditProfileScreen(navController,viewModel)
 }

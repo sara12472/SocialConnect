@@ -8,5 +8,7 @@ data class EditProfileState(
     val name: String = "",
     val username: String = "",
     val bio: String = "",
-    val profileImage: Int=R.drawable.profile
+    val profileImage: String = "",
+    val selectedImageUri: String? = null
+
 )

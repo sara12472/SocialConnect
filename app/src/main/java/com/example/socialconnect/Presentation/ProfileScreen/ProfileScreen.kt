@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -42,6 +43,9 @@ fun ProfileScreen(  navController: NavController,
 ) {
 
     val state by viewModel.state.collectAsState()
+    LaunchedEffect(Unit) {
+        viewModel.loadUser()
+    }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -59,9 +63,11 @@ fun ProfileScreen(  navController: NavController,
         ) {
 
             // 🔵 TOP BAR
-            ProfileTopBar(userName = dummyPosts[0].userName, onEditClick = {navController.navigate(Screen.EditProfileScreen.route)}, onBackClick = {})
+            ProfileTopBar(userName = state.username, onEditClick = {navController.navigate(Screen.EditProfileScreen.route)}, onBackClick = {
+                navController.popBackStack()
+            })
 
-            ProfileHeader(profileImage = dummyPosts[0].profileImage, userName = dummyPosts[0].userName,"android developer")
+            ProfileHeader(profileImage = state.profileImage, userName = state.name, bio =state.bio)
 
             Spacer(modifier = Modifier.height(12.dp))
 
