@@ -3,8 +3,12 @@ package com.example.socialconnect.DI
 import android.content.Context
 import com.example.socialconnect.Data.Repository.AuthRepositoryImpl
 import com.example.socialconnect.Data.Repository.EditProfileRepositoryImpl
+import com.example.socialconnect.Data.Repository.FollowRepositoryImpl
+import com.example.socialconnect.Data.Repository.PostRepositoryImpl
 import com.example.socialconnect.Domain.Repository.AuthRepository
 import com.example.socialconnect.Domain.Repository.EditProfileRepository
+import com.example.socialconnect.Domain.Repository.FollowRepository
+import com.example.socialconnect.Domain.Repository.PostRepository
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -20,6 +24,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
 
 import com.example.socialconnect.R
+import dagger.Binds
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -64,5 +69,20 @@ object FirebaseModule {
             .build()
 
         return GoogleSignIn.getClient(context, gso)
+    }
+    @Provides
+    @Singleton
+    fun providePostRepository(
+        firestore: FirebaseFirestore
+    ): PostRepository {
+
+        return PostRepositoryImpl(firestore)
+    }
+    @Provides
+    @Singleton
+    fun provideFollowRepository(
+        firestore: FirebaseFirestore
+    ): FollowRepository {
+        return FollowRepositoryImpl(firestore)
     }
 }

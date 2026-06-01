@@ -9,12 +9,15 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 
 @Composable
 fun ProfileFloatingButton(
-    image: Int,
+    image: String,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {}
 ) {
@@ -27,10 +30,13 @@ fun ProfileFloatingButton(
         elevation = CardDefaults.cardElevation(8.dp)
     ) {
 
-        Image(
-            painter = painterResource(id = image),
-            contentDescription = "Profile",
-           modifier = Modifier.fillMaxSize()
+        AsyncImage(
+            model = image,
+            contentDescription = null,
+            modifier = Modifier
+                .size(55.dp)
+                .clip(CircleShape),
+            contentScale = ContentScale.Crop
         )
     }
 }

@@ -8,7 +8,7 @@ import com.example.socialconnect.Data.Model.User
 import com.example.socialconnect.Domain.UseCases.GetCurrentUserIdUseCase
 import com.example.socialconnect.Domain.UseCases.GetUserUseCase
 import com.example.socialconnect.Domain.UseCases.UpdateUserUseCase
-import com.example.socialconnect.Domain.UseCases.UploadImageUseCase
+import com.example.socialconnect.Domain.UseCases.UploadMediaUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class EditProfileViewModel @Inject constructor(
     private val updateUserUseCase: UpdateUserUseCase,
-    private val uploadImageUseCase: UploadImageUseCase,
+    private val uploadImageUseCase: UploadMediaUseCase,
     private val getUserUseCase: GetUserUseCase,
     private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase
 ) : ViewModel() {
@@ -59,7 +59,7 @@ class EditProfileViewModel @Inject constructor(
         viewModelScope.launch {
 
             val imageUrl =
-                uploadImageUseCase(uri, context)
+                uploadImageUseCase(uri, context,"image")
 
             _state.value =
                 _state.value.copy(

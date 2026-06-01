@@ -6,9 +6,10 @@ import com.example.socialconnect.Core.Resource
 import com.example.socialconnect.Data.Model.User
 
 interface EditProfileRepository {
-    suspend fun uploadImageToCloudinary(
+    suspend fun uploadMediaToCloudinary(
         uri: Uri,
-        context: Context
+        context: Context,
+        type: String
     ): String
     suspend fun updateUser(user: User): Resource<Boolean>
     suspend fun getUser(uid: String): User

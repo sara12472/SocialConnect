@@ -43,7 +43,7 @@ fun ForgetPasswordScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        // 🔵 TITLE
+        // TITLE
         Text(
             text = "Forgot Password",
             color = MaterialTheme.colorScheme.onPrimary,
@@ -60,7 +60,7 @@ fun ForgetPasswordScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // 📧 EMAIL FIELD
+        // EMAIL FIELD
         AppTextField(
             value = state.email,
             onValueChange = viewModel::onEmailChange,
@@ -70,7 +70,7 @@ fun ForgetPasswordScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // 🔵 ERROR MESSAGE
+        // ERROR MESSAGE
         state.errorMessage?.let {
             Text(
                 text = it,
@@ -78,7 +78,7 @@ fun ForgetPasswordScreen(
             )
         }
 
-        // 🔵 SUCCESS MESSAGE
+        // SUCCESS MESSAGE
         state.successMessage?.let {
             Text(
                 text = it,
@@ -88,7 +88,7 @@ fun ForgetPasswordScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // 🔵 BUTTON
+        // BUTTON
         AppButton(
             text = if (state.isLoading) "Sending..." else "Send Reset Link",
             onClick = viewModel::onSendClick,
@@ -97,7 +97,7 @@ fun ForgetPasswordScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // 🔙 BACK TO LOGIN
+        // BACK TO LOGIN
         Text(
             text = "Back to Login",
             color = MaterialTheme.colorScheme.primary,

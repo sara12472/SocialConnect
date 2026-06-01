@@ -20,6 +20,7 @@ fun AppButton(
     text: String,
     onClick: () -> Unit,
     containerColor: Color = MaterialTheme.colorScheme.primary,
+    contentColor: Color = MaterialTheme.colorScheme.background,
 
     modifier: Modifier = Modifier,
     enabled: Boolean = true
@@ -36,7 +37,8 @@ fun AppButton(
         shape = RoundedCornerShape(16.dp),
 
         colors = ButtonDefaults.buttonColors(
-            containerColor = containerColor
+            containerColor = containerColor,
+
         )
 
     ) {
@@ -44,7 +46,7 @@ fun AppButton(
         Text(
             text = text,
             style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.background
+            color = contentColor
 
         )
     }

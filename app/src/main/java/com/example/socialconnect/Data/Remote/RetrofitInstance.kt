@@ -1,4 +1,4 @@
-package com.example.socialconnect.Domain
+package com.example.socialconnect.Data.Remote
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

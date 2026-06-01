@@ -1,10 +1,13 @@
 package com.example.socialconnect.Navigation
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.socialconnect.Presentation.AuthScreen.AuthScreen
+import com.example.socialconnect.Presentation.CreatePost.CreatePostScreen
 import com.example.socialconnect.Presentation.EditProfileScreen.EditProfileScreen
 import com.example.socialconnect.Presentation.ForgotPassword.ForgetPasswordScreen
 import com.example.socialconnect.Presentation.HomeScreen.HomeScreen
@@ -41,6 +44,30 @@ fun AppNavigation() {
         }
         composable(Screen.EditProfileScreen.route){
             EditProfileScreen(navController)
+        }
+        composable(
+            route = "create_post?mediaUri={mediaUri}&mediaType={mediaType}",
+            arguments = listOf(
+                navArgument("mediaUri") {
+                    type = NavType.StringType
+                },
+                navArgument("mediaType") {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+
+            val mediaUri =
+                backStackEntry.arguments?.getString("mediaUri") ?: ""
+
+            val mediaType =
+                backStackEntry.arguments?.getString("mediaType") ?: ""
+
+            CreatePostScreen(
+                navController = navController,
+                mediaUri = mediaUri,
+                mediaType = mediaType
+            )
         }
     }
 }

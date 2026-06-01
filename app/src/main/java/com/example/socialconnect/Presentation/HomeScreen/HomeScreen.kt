@@ -1,9 +1,14 @@
 package com.example.socialconnect.Presentation.HomeScreen
 
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,19 +17,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import com.example.socialconnect.R
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.socialconnect.Data.Model.dummyPosts
 import com.example.socialconnect.Data.Model.dummyStories
 import com.example.socialconnect.Navigation.Screen
 import com.example.socialconnect.Presentation.HomeScreen.Component.BottomBar
@@ -40,40 +48,85 @@ fun HomeScreen( navController: NavController,
 ) {
 
     val state = viewModel.state.collectAsState().value
+    val context = LocalContext.current
+    val listState = rememberLazyListState()
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri ->
+
+        uri?.let {
+
+            val mimeType = context.contentResolver.getType(it)
+
+            val type =
+                if (mimeType?.startsWith("video") == true) "video"
+                else "image"
+
+            navController.navigate(
+                Screen.CreatePostScreen.route +
+                        "?mediaUri=${Uri.encode(it.toString())}" +
+                        "&mediaType=$type"
+            )
+        }
+    }
+    LaunchedEffect(Unit) {
+        viewModel.refreshUser()
+    }
 
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
 
         Scaffold(
-
-            topBar = {
-                HomeTopBar(
-                    onAddClick = { viewModel.onAddClick() },
-                    onHeartClick = { viewModel.onHeartClick() }
-                )
-            },
-
             containerColor = MaterialTheme.colorScheme.background
-
         ) { paddingValues ->
 
-            Column(
+            LazyColumn(
+                state = listState,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
+                    .padding(paddingValues),
+
+
             ) {
 
-                StoryRow(
-                    stories = dummyStories
-                )
 
-                LazyColumn {
+                item {
+                    HomeTopBar(
+                        onAddClick = { launcher.launch("*/*") },
+                        onHeartClick = { }
+                    )
+                }
 
-                    items(dummyPosts) { post ->
+                // Stories
+                item {
+                    StoryRow(stories = dummyStories)
+                }
 
-                        PostCard(post = post)
-                    }
+                // Posts
+                itemsIndexed(state.posts) { index, post ->
+
+                    val layoutInfo = listState.layoutInfo
+
+                    val centerIndex =
+                        listState.layoutInfo.visibleItemsInfo
+                            .minByOrNull { item ->
+                                kotlin.math.abs(item.offset)
+                            }
+                            ?.index
+
+                    val isVisible = centerIndex == index + 2
+
+                    PostCard(
+                        post = post,
+                        isVisible = isVisible,
+                        onUserClick = {
+                            navController.navigate(
+                                Screen.ProfileScreen.createRoute(post.userId)
+                            )
+                        }
+                    )
                 }
             }
         }
@@ -83,7 +136,10 @@ fun HomeScreen( navController: NavController,
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
-                .padding(horizontal = 25.dp, vertical = 12.dp),
+                .padding(horizontal = 25.dp, vertical = 12.dp)
+
+            ,
+
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -97,8 +153,12 @@ fun HomeScreen( navController: NavController,
 
                 Row() {
                     ProfileFloatingButton(
-                        image = R.drawable.profile,
-                        onClick = {navController.navigate(Screen.ProfileScreen.route)}
+                        image = state.profileImage,
+                        onClick = { navController.navigate(
+                            Screen.ProfileScreen.createRoute(
+                                state.currentUserId
+                            )
+                        )}
                     )
                 }
 

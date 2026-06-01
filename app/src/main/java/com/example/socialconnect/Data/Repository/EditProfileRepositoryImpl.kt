@@ -5,7 +5,7 @@ import android.net.Uri
 import com.example.socialconnect.Core.Resource
 import com.example.socialconnect.Data.Model.User
 import com.example.socialconnect.Domain.Repository.EditProfileRepository
-import com.example.socialconnect.Domain.RetrofitInstance
+import com.example.socialconnect.Data.Remote.RetrofitInstance
 import com.google.firebase.firestore.FirebaseFirestore
 import jakarta.inject.Inject
 import kotlinx.coroutines.tasks.await
@@ -17,28 +17,34 @@ class EditProfileRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore) :
     EditProfileRepository {
 
-    override suspend fun uploadImageToCloudinary(
+    override suspend fun uploadMediaToCloudinary(
         uri: Uri,
-        context: Context
+        context: Context,
+        type: String
     ): String {
 
         val inputStream = context.contentResolver.openInputStream(uri)
         val bytes = inputStream!!.readBytes()
 
-        val requestFile = bytes.toRequestBody("image/*".toMediaTypeOrNull())
+        val mimeType = context.contentResolver.getType(uri) ?: "image/*"
+
+        val requestFile = bytes.toRequestBody(mimeType.toMediaTypeOrNull())
 
         val filePart = MultipartBody.Part.createFormData(
             "file",
-            "image.jpg",
+            if (type == "video") "video.mp4" else "image.jpg",
             requestFile
         )
 
-        val uploadPreset = "profileImage"
+        val uploadPreset = "social_upload"
             .toRequestBody("text/plain".toMediaTypeOrNull())
 
-        val response = RetrofitInstance.api.uploadImage(
-            filePart,
-            uploadPreset
+        val resourceType = if (type == "video") "video" else "image"
+
+        val response = RetrofitInstance.api.uploadMedia(
+            resourceType = resourceType,
+            file = filePart,
+            uploadPreset = uploadPreset
         )
 
         return response.secure_url
@@ -49,6 +55,7 @@ class EditProfileRepositoryImpl @Inject constructor(
                 .document(user.uid)
                 .set(user)
                 .await()
+            updatePostsForUser(user)
 
             Resource.Success(true)
 
@@ -65,5 +72,22 @@ class EditProfileRepositoryImpl @Inject constructor(
             .await()
 
         return document.toObject(User::class.java) ?: User()
+    }
+    private suspend fun updatePostsForUser(user: User) {
+
+        val snapshot = firestore.collection("posts")
+            .whereEqualTo("userId", user.uid)
+            .get()
+            .await()
+
+        snapshot.documents.forEach { doc ->
+
+            doc.reference.update(
+                mapOf(
+                    "userName" to user.name,
+                    "userProfile" to user.profileImage
+                )
+            ).await()
+        }
     }
 }
