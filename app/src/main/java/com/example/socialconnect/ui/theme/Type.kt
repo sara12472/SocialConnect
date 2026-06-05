@@ -30,7 +30,7 @@ val Typography = Typography(
 
     bodyMedium = TextStyle(
         fontSize = 14.sp,
-        fontWeight = FontWeight.Normal
+        fontWeight = FontWeight.Medium
     ),
 
     labelSmall = TextStyle(

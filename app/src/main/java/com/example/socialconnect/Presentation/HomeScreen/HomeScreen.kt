@@ -410,7 +410,7 @@ fun CommentBottomSheet(
 
                                     Text(
                                         text = reply.userName,
-                                        style = MaterialTheme.typography.labelSmall,
+                                        style = MaterialTheme.typography.bodyMedium,
                                         color = MaterialTheme.colorScheme.primary
                                     )
 
