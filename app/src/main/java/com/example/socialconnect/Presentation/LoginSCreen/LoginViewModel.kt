@@ -7,12 +7,13 @@ import com.example.socialconnect.Domain.Repository.AuthRepository
 import com.example.socialconnect.Domain.UseCases.LoginUseCase
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jakarta.inject.Inject
+
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import com.example.socialconnect.R
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel  @Inject constructor(

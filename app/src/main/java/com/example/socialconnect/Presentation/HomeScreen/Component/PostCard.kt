@@ -23,6 +23,8 @@ import com.example.socialconnect.R
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.FavoriteBorder
@@ -41,6 +43,7 @@ import androidx.compose.runtime.toString
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -57,10 +60,10 @@ import coil.compose.AsyncImage
 import com.example.socialconnect.Data.Model.Post
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
-import com.example.socialconnect.Data.Model.Posts
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.media3.ui.AspectRatioFrameLayout
 import com.example.socialconnect.Navigation.Screen
 
 
@@ -69,11 +72,18 @@ import com.example.socialconnect.Navigation.Screen
 fun PostCard(
     post: Post,
     isVisible: Boolean,
-    onUserClick: () -> Unit = {}
+    currentUserId: String,
+    onUserClick: () -> Unit = {},
+    onLikeClick: (Post) -> Unit,
+    onCommentClick: (Post) -> Unit,
+    onShareClick: (Post) -> Unit,
+    savedPostIds: List<String>,
+    onSaveClick: (Post) -> Unit,
 ) {
 
 
-
+    val isLiked = post.likedBy.contains(currentUserId)
+    val isSaved = savedPostIds.contains(post.postId)
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -101,7 +111,7 @@ fun PostCard(
                     contentDescription = post.userName,
                     modifier = Modifier
                         .clickable{
-                            onUserClick
+                            onUserClick()
                         }
                         .size(45.dp)
                         .clip(CircleShape),
@@ -196,12 +206,16 @@ fun PostCard(
                         PlayerView(it).apply {
                             player = exoPlayer
                             useController = false
-                            resizeMode = androidx.media3.ui.AspectRatioFrameLayout.RESIZE_MODE_FILL
+                            resizeMode = androidx.media3.ui.AspectRatioFrameLayout.RESIZE_MODE_FIT
                         }
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(400.dp)
+                        .heightIn(
+                            min = 250.dp,
+                            max = 500.dp
+                        )
+                    ,
                 )
             }
 
@@ -219,37 +233,55 @@ fun PostCard(
                 Row(verticalAlignment = Alignment.CenterVertically) {
 
                     Icon(
-                        imageVector = Icons.Outlined.FavoriteBorder,
+                        imageVector =
+                            if (isLiked)
+                                Icons.Filled.Favorite
+                            else
+                                Icons.Outlined.FavoriteBorder,
+
                         contentDescription = null,
-                        modifier = Modifier.clickable { }
+                        tint = if (isLiked) Color.Red else Color.Gray,
+                        modifier = Modifier.clickable {
+                            onLikeClick(post)
+                        }
                     )
 
-                    Text("12")
+                    Text(text= "${post.likes}")
 
                     Spacer(Modifier.width(10.dp))
 
                     Icon(
                         imageVector = Icons.Outlined.ChatBubbleOutline,
                         contentDescription = null,
-                        modifier = Modifier.clickable { }
+                        modifier = Modifier.clickable {
+                            onCommentClick(post)
+                        }
                     )
 
-                    Text("13")
+                    Text("${post.totalCommentsCount}")
 
                     Spacer(Modifier.width(10.dp))
 
                     Icon(
                         imageVector = Icons.Outlined.Send,
                         contentDescription = null,
-                        modifier = Modifier.clickable { }
+                        modifier = Modifier.clickable {
+                            onShareClick(post)
+                        }
                     )
                 }
 
-                IconButton(onClick = {}) {
+                IconButton(onClick = {onSaveClick(post)}) {
+                    val isSaved = savedPostIds.contains(post.postId)
 
                     Icon(
-                        imageVector = Icons.Outlined.BookmarkBorder,
-                        contentDescription = "Save"
+                        imageVector =
+                            if (isSaved)
+                                Icons.Filled.Bookmark   // temporary (we'll improve)
+                            else
+                                Icons.Outlined.BookmarkBorder,
+                        contentDescription = "Save",
+                        tint = if (isSaved) Color.Black else Color.Gray
                     )
                 }
             }

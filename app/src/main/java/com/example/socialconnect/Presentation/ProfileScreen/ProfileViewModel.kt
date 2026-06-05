@@ -4,13 +4,16 @@ package com.example.socialconnect.Presentation.ProfileScreen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.socialconnect.Domain.UseCases.FollowUserUseCase
+import com.example.socialconnect.Domain.UseCases.GetCurrentUserIdUseCase
+import com.example.socialconnect.Domain.UseCases.GetFollowersCountUseCase
+import com.example.socialconnect.Domain.UseCases.GetFollowingCountUseCase
 import com.example.socialconnect.Domain.UseCases.GetUserPostsUseCase
 import com.example.socialconnect.Domain.UseCases.GetUserUseCase
 import com.example.socialconnect.Domain.UseCases.IsFollowingUseCase
 import com.example.socialconnect.Domain.UseCases.UnfollowUserUseCase
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jakarta.inject.Inject
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,7 +25,10 @@ class ProfileViewModel @Inject constructor(
     private val getUserPostsUseCase: GetUserPostsUseCase,
     private val followUserUseCase: FollowUserUseCase,
     private val unfollowUserUseCase: UnfollowUserUseCase,
-    private val isFollowingUseCase: IsFollowingUseCase
+    private val isFollowingUseCase: IsFollowingUseCase,
+    private val getFollowersCountUseCase: GetFollowersCountUseCase,
+    private  val getFollowingCountUseCase: GetFollowingCountUseCase,
+    private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ProfileState())
@@ -39,9 +45,7 @@ class ProfileViewModel @Inject constructor(
 
         viewModelScope.launch {
 
-            val currentUserId =
-                FirebaseAuth.getInstance().currentUser?.uid
-
+            val currentUserId = getCurrentUserIdUseCase()
             val user = getUserUseCase(profileUserId)
 
             var following = false
@@ -69,6 +73,7 @@ class ProfileViewModel @Inject constructor(
             )
 
             loadPosts(profileUserId)
+            loadFollowCounts(profileUserId)
         }
     }
     private fun loadPosts(uid: String) {
@@ -80,12 +85,9 @@ class ProfileViewModel @Inject constructor(
         }
     }
     fun onFollowClick(targetUserId: String) {
-
         viewModelScope.launch {
 
-            val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
-                ?: return@launch
-
+            val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: return@launch
             val current = _state.value.isFollowing
 
             if (current) {
@@ -94,9 +96,31 @@ class ProfileViewModel @Inject constructor(
                 followUserUseCase(currentUserId, targetUserId)
             }
 
-            _state.value = _state.value.copy(
-                isFollowing = !current
-            )
+            loadFollowCounts(targetUserId)
+
+            _state.value = _state.value.copy(isFollowing = !current)
+        }
+    }
+    private fun loadFollowCounts(userId: String) {
+
+        viewModelScope.launch {
+
+            getFollowersCountUseCase(userId).collect { count ->
+
+                _state.value = _state.value.copy(
+                    followersCount = count
+                )
+            }
+        }
+
+        viewModelScope.launch {
+
+            getFollowingCountUseCase(userId).collect { count ->
+
+                _state.value = _state.value.copy(
+                    followingCount = count
+                )
+            }
         }
     }
 }

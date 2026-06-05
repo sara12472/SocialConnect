@@ -2,13 +2,21 @@ package com.example.socialconnect.DI
 
 import android.content.Context
 import com.example.socialconnect.Data.Repository.AuthRepositoryImpl
+import com.example.socialconnect.Data.Repository.CommentRepositoryImpl
 import com.example.socialconnect.Data.Repository.EditProfileRepositoryImpl
+import com.example.socialconnect.Data.Repository.FcmRepositoryImpl
 import com.example.socialconnect.Data.Repository.FollowRepositoryImpl
+import com.example.socialconnect.Data.Repository.NotificationRepositoryImpl
 import com.example.socialconnect.Data.Repository.PostRepositoryImpl
+import com.example.socialconnect.Data.Repository.SavedPostRepositoryImpl
 import com.example.socialconnect.Domain.Repository.AuthRepository
+import com.example.socialconnect.Domain.Repository.CommentRepository
 import com.example.socialconnect.Domain.Repository.EditProfileRepository
+import com.example.socialconnect.Domain.Repository.FcmRepository
 import com.example.socialconnect.Domain.Repository.FollowRepository
+import com.example.socialconnect.Domain.Repository.NotificationRepository
 import com.example.socialconnect.Domain.Repository.PostRepository
+import com.example.socialconnect.Domain.Repository.SavedPostRepository
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -17,7 +25,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import jakarta.inject.Singleton
+import javax.inject.Singleton
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -84,5 +92,35 @@ object FirebaseModule {
         firestore: FirebaseFirestore
     ): FollowRepository {
         return FollowRepositoryImpl(firestore)
+    }
+    @Provides
+    @Singleton
+    fun provideCommentRepository(
+        firestore: FirebaseFirestore
+    ): CommentRepository {
+        return CommentRepositoryImpl(firestore)
+    }
+    @Provides
+    @Singleton
+    fun provideNotificationRepository(
+        database: FirebaseFirestore
+    ): NotificationRepository {
+        return NotificationRepositoryImpl(database)
+    }
+    @Provides
+    @Singleton
+    fun provideFcmRepository(): FcmRepository {
+        return FcmRepositoryImpl()
+    }
+    @Provides
+    @Singleton
+    fun provideSavedPostRepository(
+        firestore: FirebaseFirestore,
+        auth: FirebaseAuth
+    ): SavedPostRepository {
+        return SavedPostRepositoryImpl(
+            firestore,
+            auth
+        )
     }
 }

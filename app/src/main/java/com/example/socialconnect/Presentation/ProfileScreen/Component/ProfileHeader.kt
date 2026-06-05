@@ -20,7 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.example.socialconnect.Data.Model.dummyPosts
+import com.example.socialconnect.R
 
 
 @Composable
@@ -35,16 +35,20 @@ fun ProfileHeader(
     ) {
 
         // 🔵 PROFILE IMAGE
-        AsyncImage(
-            model = profileImage,
-            contentDescription = userName,
-            contentScale = ContentScale.Crop,
-
-
-            modifier = Modifier
-                .size(100.dp)
-                .clip(CircleShape)
-        )
+        if (profileImage.isNotEmpty()) {
+            AsyncImage(
+                model = profileImage,
+                contentDescription = userName,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.size(100.dp).clip(CircleShape)
+            )
+        } else {
+            Image(
+                painter = painterResource(id = R.drawable.avatar),
+                contentDescription = "Default Avatar",
+                modifier = Modifier.size(100.dp).clip(CircleShape)
+            )
+        }
 
         Spacer(modifier = Modifier.height(5.dp))
 

@@ -1,8 +1,11 @@
 package com.example.socialconnect.Presentation.CreatePost
 
+import CustomAppBar
 import android.net.Uri
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -11,18 +14,23 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CheckboxDefaults.colors
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -56,24 +64,25 @@ fun CreatePostScreen(
     LaunchedEffect(state.isPosted) {
         if (state.isPosted) navController.popBackStack()
     }
-
     Scaffold(
-        topBar = {
-            TopAppBar(title = { Text("Create Post") })
-        }
+        containerColor = Color.Transparent
     ) { innerPadding ->
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(16.dp)
-                .verticalScroll(scrollState)
                 .imePadding()
                 .navigationBarsPadding()
         ) {
 
-            // IMAGE PREVIEW
+            CustomAppBar(
+                title = "Create Post",
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
+
             if (state.mediaType == "image") {
 
                 AsyncImage(
@@ -81,7 +90,7 @@ fun CreatePostScreen(
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(250.dp)
+                        .height(300.dp)
                 )
 
             } else if (state.mediaType == "video") {
@@ -107,37 +116,57 @@ fun CreatePostScreen(
                     factory = {
                         PlayerView(it).apply {
                             this.player = player
+                            useController = true
                         }
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(250.dp)
+                        .height(300.dp)
                 )
             }
+
             Spacer(modifier = Modifier.height(16.dp))
 
-            // CAPTION
             OutlinedTextField(
                 value = state.caption,
                 onValueChange = viewModel::onCaptionChange,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
                 minLines = 4,
-                placeholder = { Text("Write a caption...") }
+                placeholder = {
+                    Text("Write a caption...")
+                },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color.Transparent,
+                    unfocusedBorderColor = Color.Transparent
+                )
             )
 
-            Spacer(modifier = Modifier.height(20.dp))
-
-            // BUTTON
-            AppButton(
-                text = "Post",
-                onClick = { viewModel.createPost(context) },
-                enabled = !state.isLoading
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.weight(1f))
 
             if (state.isLoading) {
-                CircularProgressIndicator()
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+
+            } else {
+
+                AppButton(
+                    text = "Post",
+                    onClick = {
+                        viewModel.createPost(context)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                )
             }
         }
     }

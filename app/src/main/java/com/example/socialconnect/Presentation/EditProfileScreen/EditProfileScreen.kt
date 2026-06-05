@@ -35,12 +35,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.socialconnect.Component.AppTextField
 import com.google.firebase.auth.FirebaseAuth
+import com.example.socialconnect.R
 
 @Composable
 fun EditProfileScreen(
@@ -124,20 +126,25 @@ fun EditProfileScreen(
                 Column(modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                    AsyncImage(
-                        model = if (state.profileImage.isNotEmpty())
-                            state.profileImage
-                        else
-                            "https://i.pravatar.cc/300",
-
-                        contentDescription = "Profile",
-                        contentScale = ContentScale.Crop,
-
-
-                        modifier = Modifier
-                            .size(110.dp)
-                            .clip(CircleShape)
-                    )
+                    if (state.profileImage.isNotEmpty()) {
+                        AsyncImage(
+                            model = state.profileImage,
+                            contentDescription = "Profile",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(110.dp)
+                                .clip(CircleShape)
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(id = R.drawable.avatar),
+                            contentDescription = "Default Avatar",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(110.dp)
+                                .clip(CircleShape)
+                        )
+                    }
 
                     Spacer(modifier = Modifier.height(10.dp))
 

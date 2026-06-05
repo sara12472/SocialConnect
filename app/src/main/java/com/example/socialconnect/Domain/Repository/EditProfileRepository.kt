@@ -13,5 +13,6 @@ interface EditProfileRepository {
     ): String
     suspend fun updateUser(user: User): Resource<Boolean>
     suspend fun getUser(uid: String): User
+    suspend fun updateFcmToken(userId: String, token: String)
 
 }

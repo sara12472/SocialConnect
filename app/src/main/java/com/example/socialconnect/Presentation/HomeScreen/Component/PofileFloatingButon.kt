@@ -14,6 +14,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.example.socialconnect.R
 
 @Composable
 fun ProfileFloatingButton(
@@ -30,13 +31,24 @@ fun ProfileFloatingButton(
         elevation = CardDefaults.cardElevation(8.dp)
     ) {
 
-        AsyncImage(
-            model = image,
-            contentDescription = null,
-            modifier = Modifier
-                .size(55.dp)
-                .clip(CircleShape),
-            contentScale = ContentScale.Crop
-        )
+        if (image.isNullOrEmpty()) {
+            Image(
+                painter = painterResource(id = R.drawable.avatar), // your default avatar
+                contentDescription = "Default Avatar",
+                modifier = Modifier
+                    .size(55.dp)
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop
+            )
+        } else {
+            AsyncImage(
+                model = image,
+                contentDescription = "Profile Image",
+                modifier = Modifier
+                    .size(55.dp)
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop
+            )
+        }
     }
 }

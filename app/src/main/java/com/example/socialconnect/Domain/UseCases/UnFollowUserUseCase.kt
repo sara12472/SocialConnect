@@ -1,7 +1,8 @@
 package com.example.socialconnect.Domain.UseCases
 
 import com.example.socialconnect.Domain.Repository.FollowRepository
-import jakarta.inject.Inject
+import javax.inject.Inject
+
 
 class UnfollowUserUseCase @Inject constructor(
     private val repository: FollowRepository

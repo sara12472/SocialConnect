@@ -7,7 +7,7 @@ import com.example.socialconnect.Data.Model.User
 import com.example.socialconnect.Domain.Repository.EditProfileRepository
 import com.example.socialconnect.Data.Remote.RetrofitInstance
 import com.google.firebase.firestore.FirebaseFirestore
-import jakarta.inject.Inject
+import javax.inject.Inject
 import kotlinx.coroutines.tasks.await
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -90,4 +90,11 @@ class EditProfileRepositoryImpl @Inject constructor(
             ).await()
         }
     }
+    override suspend fun updateFcmToken(userId: String, token: String) {
+        firestore.collection("users")
+            .document(userId)
+            .update("fcmToken", token)
+            .await()
+    }
+
 }

@@ -7,8 +7,9 @@ import com.example.socialconnect.Domain.Repository.AuthRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
-import jakarta.inject.Inject
+
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
 
 class AuthRepositoryImpl @Inject constructor(
@@ -115,6 +116,15 @@ class AuthRepositoryImpl @Inject constructor(
     }
     override suspend fun getCurrentUserId(): String? {
         return auth.currentUser?.uid
+    }
+    override suspend fun logout() {
+        auth.signOut()
+    }
+    override suspend fun updateNotificationSetting(userId: String, enabled: Boolean) {
+
+        firestore.collection("users")
+            .document(userId)
+            .update("notificationsEnabled", enabled)
     }
 }
 

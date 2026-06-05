@@ -12,11 +12,12 @@ import com.example.socialconnect.Domain.UseCases.CreatePostUseCase
 import com.example.socialconnect.Domain.UseCases.GetCurrentUserIdUseCase
 import com.example.socialconnect.Domain.UseCases.GetUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jakarta.inject.Inject
+
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.UUID
+import javax.inject.Inject
 
 @HiltViewModel
 class CreatePostViewModel @Inject constructor(
@@ -76,7 +77,7 @@ class CreatePostViewModel @Inject constructor(
                     return@launch
                 }
 
-                val user = getUserUseCase(uid) // 👈 FIXED (NOW user is defined)
+                val user = getUserUseCase(uid)
 
                 val mediaUrl = uploadMediaUseCase(
                     uri,

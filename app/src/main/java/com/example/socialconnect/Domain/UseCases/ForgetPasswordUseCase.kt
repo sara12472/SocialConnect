@@ -2,7 +2,7 @@ package com.example.socialconnect.Domain.UseCases
 
 import com.example.socialconnect.Core.Resource
 import com.example.socialconnect.Domain.Repository.AuthRepository
-import jakarta.inject.Inject
+import javax.inject.Inject
 
 
 class ForgetPasswordUseCase @Inject constructor(

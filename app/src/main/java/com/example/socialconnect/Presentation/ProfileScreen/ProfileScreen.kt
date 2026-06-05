@@ -1,6 +1,8 @@
 package com.example.socialconnect.Presentation.ProfileScreen
 
 
+import android.content.Context
+import android.content.Intent
 import android.media.browse.MediaBrowser
 import android.net.Uri
 import androidx.annotation.OptIn
@@ -63,6 +65,7 @@ fun ProfileScreen(
 
 
     val state by viewModel.state.collectAsState()
+    val context = LocalContext.current
     val userId = navController
             .currentBackStackEntry
         ?.arguments
@@ -90,7 +93,7 @@ fun ProfileScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            // 🔵 TOP BAR
+
             ProfileTopBar(userName = state.username, onEditClick = {navController.navigate(Screen.EditProfileScreen.route)}, onBackClick = {
                 navController.popBackStack()
             })
@@ -99,11 +102,11 @@ fun ProfileScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // 🔵 STATS
+
             ProfileStatsSection(
-                posts = 12,
-                followers = 300,
-                following = 180
+                posts = state.posts.size,
+                followers = state.followersCount,
+                following = state.followingCount
             )
             Spacer(modifier = Modifier.height(8.dp))
             Row(
@@ -116,7 +119,6 @@ fun ProfileScreen(
 
                 if (state.isOwnProfile) {
 
-                    // 👤 OWN PROFILE
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -135,7 +137,13 @@ fun ProfileScreen(
 
                         AppButton(
                             text = "Share",
-                            onClick = { },
+                            onClick = {
+                                shareProfile(
+                                    context = context,
+                                    username = state.username,
+                                    userId = state.userId
+                                )
+                            },
                             modifier = Modifier.weight(1f).height(40.dp),
                             containerColor = MaterialTheme.colorScheme.surface,
                             contentColor = MaterialTheme.colorScheme.onBackground
@@ -144,7 +152,6 @@ fun ProfileScreen(
 
                 } else {
 
-                    // 👤 OTHER USER PROFILE
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -163,7 +170,14 @@ fun ProfileScreen(
 
                         AppButton(
                             text = "Share",
-                            onClick = { },
+                            onClick = {
+                                shareProfile(
+                                    context = context,
+                                    username = state.username,
+                                    userId = state.userId
+                                )
+
+                            },
                             modifier = Modifier.weight(1f).height(40.dp),
                             containerColor = MaterialTheme.colorScheme.surface,
                             contentColor = MaterialTheme.colorScheme.onBackground
@@ -174,13 +188,13 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(10.dp))
 
 
-            // 🔵 TABS
+
             ProfileTabSection(
                 selectedTab = state.selectedTab,
                 onTabSelected = viewModel::onTabSelected
             )
 
-            // 🔵 CONTENT
+
             if (state.selectedTab == 0) {
 
                 LazyVerticalGrid(
@@ -276,7 +290,27 @@ fun VideoThumbnailItem(videoUrl: String) {
         modifier = Modifier
             .fillMaxWidth()
             .aspectRatio(1f),
-        // square like Instagram
+
     )
 }
+fun shareProfile(
+    context: Context,
+    username: String,
+    userId: String
+) {
+    val profileLink = "https://socialconnect.app/profile/$userId"
 
+    val shareText = """
+        Check out $username's profile 👇
+        $profileLink
+    """.trimIndent()
+
+    val intent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_TEXT, shareText)
+    }
+
+    context.startActivity(
+        Intent.createChooser(intent, "Share Profile")
+    )
+}

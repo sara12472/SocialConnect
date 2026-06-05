@@ -5,10 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.socialconnect.Core.Resource
 import com.example.socialconnect.Domain.UseCases.ForgetPasswordUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jakarta.inject.Inject
+
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class ForgotPasswordViewmodel @Inject constructor(

@@ -14,6 +14,9 @@ data class ProfileState(
 
     val userId: String = "",
     val currentUserId: String = "",
-    val isOwnProfile: Boolean = false
+    val isOwnProfile: Boolean = false,
+
+    val followersCount: Int = 0,
+    val followingCount: Int = 0
 
 )

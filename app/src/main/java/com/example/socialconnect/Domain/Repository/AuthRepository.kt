@@ -20,5 +20,7 @@ interface AuthRepository {
     ): Resource<Boolean>
     suspend fun signInWithGoogle(idToken: String): Resource<Boolean>
    suspend fun getCurrentUserId(): String?
+    suspend fun updateNotificationSetting(userId: String, enabled: Boolean)
+    suspend fun logout()
 
 }

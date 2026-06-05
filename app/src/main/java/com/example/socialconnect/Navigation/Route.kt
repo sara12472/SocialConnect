@@ -4,6 +4,7 @@ sealed class Screen(val route: String) {
     object SplashScreen : Screen("SplashScreen")
     object LoginScreen : Screen("LoginScreen")
     object SignUpScreen : Screen("SignUpScreen")
+    object SavedPostScreen : Screen("SavedPostScreen")
     object AuthScreen : Screen("AuhScreen")
     object ForgetPasswordScreen : Screen("ForgotPasswordScreen")
     object HomeScreen : Screen("HomeScreen")
@@ -12,6 +13,9 @@ sealed class Screen(val route: String) {
         fun createRoute(userId: String) = "profile/$userId"
     }    object EditProfileScreen : Screen("EditProfileScreen")
     object CreatePostScreen : Screen("create_post")
+    object SettingScreen : Screen("SettingScreen")
+    object NotificationScreen : Screen("NotificationScreen")
+
 
 
 
