@@ -8,9 +8,9 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.socialconnect.Data.Model.Post
-import com.example.socialconnect.Domain.UseCases.CreatePostUseCase
-import com.example.socialconnect.Domain.UseCases.GetCurrentUserIdUseCase
-import com.example.socialconnect.Domain.UseCases.GetUserUseCase
+import com.example.socialconnect.Domain.UseCases.PostUseCase.CreatePostUseCase
+import com.example.socialconnect.Domain.UseCases.UserUsecase.GetCurrentUserIdUseCase
+import com.example.socialconnect.Domain.UseCases.UserUsecase.GetUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 
 import kotlinx.coroutines.flow.MutableStateFlow

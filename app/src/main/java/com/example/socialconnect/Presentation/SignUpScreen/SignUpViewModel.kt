@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.socialconnect.Core.Resource
 import com.example.socialconnect.Domain.Repository.AuthRepository
-import com.example.socialconnect.Domain.UseCases.SignUpUseCase
+import com.example.socialconnect.Domain.UseCases.authUseCase.SignUpUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

@@ -2,12 +2,12 @@ package com.example.socialconnect.Presentation.SettingScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.socialconnect.Domain.UseCases.GetCurrentUserIdUseCase
-import com.example.socialconnect.Domain.UseCases.GetFcmTokenUseCase
-import com.example.socialconnect.Domain.UseCases.GetUserUseCase
-import com.example.socialconnect.Domain.UseCases.LogoutUseCase
-import com.example.socialconnect.Domain.UseCases.UpdateFcmTokenUseCase
-import com.example.socialconnect.Domain.UseCases.UpdateNotificationSettingUseCase
+import com.example.socialconnect.Domain.UseCases.UserUsecase.GetCurrentUserIdUseCase
+import com.example.socialconnect.Domain.UseCases.FCMTokenUseCase.GetFcmTokenUseCase
+import com.example.socialconnect.Domain.UseCases.UserUsecase.GetUserUseCase
+import com.example.socialconnect.Domain.UseCases.authUseCase.LogoutUseCase
+import com.example.socialconnect.Domain.UseCases.FCMTokenUseCase.UpdateFcmTokenUseCase
+import com.example.socialconnect.Domain.UseCases.NotificationUseCase.UpdateNotificationSettingUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

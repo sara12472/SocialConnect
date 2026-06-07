@@ -5,9 +5,9 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.socialconnect.Data.Model.User
-import com.example.socialconnect.Domain.UseCases.GetCurrentUserIdUseCase
-import com.example.socialconnect.Domain.UseCases.GetUserUseCase
-import com.example.socialconnect.Domain.UseCases.UpdateUserUseCase
+import com.example.socialconnect.Domain.UseCases.UserUsecase.GetCurrentUserIdUseCase
+import com.example.socialconnect.Domain.UseCases.UserUsecase.GetUserUseCase
+import com.example.socialconnect.Domain.UseCases.UserUsecase.UpdateUserUseCase
 import com.example.socialconnect.Domain.UseCases.UploadMediaUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 

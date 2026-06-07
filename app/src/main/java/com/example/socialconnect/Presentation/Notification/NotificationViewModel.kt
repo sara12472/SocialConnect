@@ -2,8 +2,8 @@ package com.example.socialconnect.Presentation.Notification
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.socialconnect.Domain.UseCases.GetCurrentUserIdUseCase
-import com.example.socialconnect.Domain.UseCases.GetNotificationsUseCase
+import com.example.socialconnect.Domain.UseCases.UserUsecase.GetCurrentUserIdUseCase
+import com.example.socialconnect.Domain.UseCases.NotificationUseCase.GetNotificationsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

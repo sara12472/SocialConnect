@@ -1,37 +1,30 @@
 package com.example.socialconnect.Presentation.HomeScreen
 
 import android.util.Log
-import androidx.compose.remote.creation.dsl.first
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.socialconnect.Data.Model.AppNotification
 import com.example.socialconnect.Data.Model.Comment
 import com.example.socialconnect.Data.Model.CommentReply
 import com.example.socialconnect.Data.Model.Post
-import com.example.socialconnect.Data.Service.AppNotificationManager
-import com.example.socialconnect.Domain.Repository.SavedPostRepository
-import com.example.socialconnect.Domain.UseCases.AddCommentUseCase
-import com.example.socialconnect.Domain.UseCases.AddReplyUseCase
-import com.example.socialconnect.Domain.UseCases.GetCommentsUseCase
-import com.example.socialconnect.Domain.UseCases.GetCurrentUserIdUseCase
-import com.example.socialconnect.Domain.UseCases.GetFcmTokenUseCase
-import com.example.socialconnect.Domain.UseCases.GetFeedPostsUseCase
-import com.example.socialconnect.Domain.UseCases.GetFollowingUsersUseCase
-import com.example.socialconnect.Domain.UseCases.GetNotificationsUseCase
-import com.example.socialconnect.Domain.UseCases.GetPostByIdsUseCase
-import com.example.socialconnect.Domain.UseCases.GetPostsUseCase
-import com.example.socialconnect.Domain.UseCases.GetRepliesUseCase
-import com.example.socialconnect.Domain.UseCases.GetSavedPostsUseCase
-import com.example.socialconnect.Domain.UseCases.GetUserUseCase
-import com.example.socialconnect.Domain.UseCases.SendNotificationUseCase
+import com.example.socialconnect.Domain.UseCases.CommentUseCase.AddCommentUseCase
+import com.example.socialconnect.Domain.UseCases.CommentUseCase.AddReplyUseCase
+import com.example.socialconnect.Domain.UseCases.CommentUseCase.GetCommentsUseCase
+import com.example.socialconnect.Domain.UseCases.UserUsecase.GetCurrentUserIdUseCase
+import com.example.socialconnect.Domain.UseCases.FCMTokenUseCase.GetFcmTokenUseCase
+import com.example.socialconnect.Domain.UseCases.NotificationUseCase.GetNotificationsUseCase
+import com.example.socialconnect.Domain.UseCases.PostUseCase.GetPostsUseCase
+import com.example.socialconnect.Domain.UseCases.CommentUseCase.GetRepliesUseCase
+import com.example.socialconnect.Domain.UseCases.PostUseCase.GetSavedPostsUseCase
+import com.example.socialconnect.Domain.UseCases.UserUsecase.GetUserUseCase
+import com.example.socialconnect.Domain.UseCases.NotificationUseCase.SendNotificationUseCase
 import com.example.socialconnect.Domain.UseCases.ToggleLikeUseCase
-import com.example.socialconnect.Domain.UseCases.UnSavePostUseCase
-import com.example.socialconnect.Domain.UseCases.UpdateFcmTokenUseCase
+import com.example.socialconnect.Domain.UseCases.PostUseCase.UnSavePostUseCase
+import com.example.socialconnect.Domain.UseCases.FCMTokenUseCase.UpdateFcmTokenUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -127,37 +120,67 @@ class HomeViewModel @Inject constructor(
 
     fun onLikeClick(post: Post) {
 
+        val userId = state.value.currentUserId
+
+        val updatedPosts = state.value.posts.map { currentPost ->
+
+            if (currentPost.postId == post.postId) {
+
+                val isLiked = currentPost.likedBy.contains(userId)
+
+                if (isLiked) {
+                    currentPost.copy(
+                        likes = (currentPost.likes - 1).coerceAtLeast(0),
+                        likedBy = currentPost.likedBy - userId
+                    )
+                } else {
+                    currentPost.copy(
+                        likes = currentPost.likes + 1,
+                        likedBy = currentPost.likedBy + userId
+                    )
+                }
+
+            } else currentPost
+        }
+
+        _state.update {
+            it.copy(posts = updatedPosts)
+        }
+
         viewModelScope.launch {
 
-            val userId = getCurrentUserIdUseCase() ?: return@launch
+            try {
 
-            val receiver = getUserUseCase(post.userId)
 
-            // ❗ 1. OWN POST CHECK FIRST
-            if (post.userId == userId) {
                 toggleLikeUseCase(post.postId, userId)
-                return@launch
+
+
+                if (post.userId == userId) return@launch
+
+                val receiver = getUserUseCase(post.userId)
+
+                if (!receiver.notificationsEnabled) return@launch
+
+                val user = getUserUseCase(userId)
+
+                val notification = AppNotification(
+                    senderId = userId,
+                    senderName = user.name,
+                    senderProfile = user.profileImage,
+                    receiverId = post.userId,
+                    postId = post.postId,
+                    type = "like"
+                )
+
+                sendNotificationUseCase(notification)
+
+            } catch (e: Exception) {
+
+                Log.e("LikeError", e.message ?: "Unknown Error")
+
+
+                getPosts()
             }
-
-            // ❗ 2. TOGGLE LIKE ALWAYS (even if notifications OFF)
-            toggleLikeUseCase(post.postId, userId)
-
-            // ❗ 3. NOTIFICATION CHECK
-            if (!receiver.notificationsEnabled) return@launch
-
-            val user = getUserUseCase(userId)
-
-            val notification = AppNotification(
-                senderId = userId,
-                senderName = user.name,
-                senderProfile = user.profileImage,
-                receiverId = post.userId,
-                postId = post.postId,
-                type = "like"
-            )
-
-            sendNotificationUseCase(notification)
-
         }
     }
 

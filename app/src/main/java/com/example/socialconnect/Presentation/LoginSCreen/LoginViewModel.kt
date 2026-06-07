@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.socialconnect.Core.Resource
 import com.example.socialconnect.Domain.Repository.AuthRepository
-import com.example.socialconnect.Domain.UseCases.LoginUseCase
+import com.example.socialconnect.Domain.UseCases.authUseCase.LoginUseCase
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import dagger.hilt.android.lifecycle.HiltViewModel
 

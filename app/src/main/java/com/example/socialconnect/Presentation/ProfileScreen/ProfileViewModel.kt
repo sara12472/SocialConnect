@@ -3,14 +3,14 @@ package com.example.socialconnect.Presentation.ProfileScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.socialconnect.Domain.UseCases.FollowUserUseCase
-import com.example.socialconnect.Domain.UseCases.GetCurrentUserIdUseCase
-import com.example.socialconnect.Domain.UseCases.GetFollowersCountUseCase
-import com.example.socialconnect.Domain.UseCases.GetFollowingCountUseCase
-import com.example.socialconnect.Domain.UseCases.GetUserPostsUseCase
-import com.example.socialconnect.Domain.UseCases.GetUserUseCase
-import com.example.socialconnect.Domain.UseCases.IsFollowingUseCase
-import com.example.socialconnect.Domain.UseCases.UnfollowUserUseCase
+import com.example.socialconnect.Domain.UseCases.FollowUseCase.FollowUserUseCase
+import com.example.socialconnect.Domain.UseCases.UserUsecase.GetCurrentUserIdUseCase
+import com.example.socialconnect.Domain.UseCases.FollowUseCase.GetFollowersCountUseCase
+import com.example.socialconnect.Domain.UseCases.FollowUseCase.GetFollowingCountUseCase
+import com.example.socialconnect.Domain.UseCases.PostUseCase.GetUserPostsUseCase
+import com.example.socialconnect.Domain.UseCases.UserUsecase.GetUserUseCase
+import com.example.socialconnect.Domain.UseCases.FollowUseCase.IsFollowingUseCase
+import com.example.socialconnect.Domain.UseCases.FollowUseCase.UnfollowUserUseCase
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

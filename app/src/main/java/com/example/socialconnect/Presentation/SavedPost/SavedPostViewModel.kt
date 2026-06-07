@@ -2,13 +2,12 @@ package com.example.socialconnect.Presentation.SavedPost
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.socialconnect.Domain.UseCases.GetCurrentUserIdUseCase
-import com.example.socialconnect.Domain.UseCases.GetPostByIdsUseCase
-import com.example.socialconnect.Domain.UseCases.GetSavedPostsUseCase
+import com.example.socialconnect.Domain.UseCases.UserUsecase.GetCurrentUserIdUseCase
+import com.example.socialconnect.Domain.UseCases.PostUseCase.GetPostByIdsUseCase
+import com.example.socialconnect.Domain.UseCases.PostUseCase.GetSavedPostsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

@@ -3,7 +3,7 @@ package com.example.socialconnect.Presentation.ForgotPassword
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.socialconnect.Core.Resource
-import com.example.socialconnect.Domain.UseCases.ForgetPasswordUseCase
+import com.example.socialconnect.Domain.UseCases.authUseCase.ForgetPasswordUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 
 import kotlinx.coroutines.flow.MutableStateFlow
