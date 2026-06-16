@@ -2,6 +2,7 @@ package com.example.socialconnect.Presentation.CreatePost
 
 import CustomAppBar
 import android.net.Uri
+import com.example.socialconnect.R
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -32,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -77,7 +79,7 @@ fun CreatePostScreen(
         ) {
 
             CustomAppBar(
-                title = "Create Post",
+                title = stringResource(R.string.CreatePost_text),
                 onBackClick = {
                     navController.popBackStack()
                 }
@@ -159,7 +161,7 @@ fun CreatePostScreen(
             } else {
 
                 AppButton(
-                    text = "Post",
+                    text = stringResource(R.string.Post_text),
                     onClick = {
                         viewModel.createPost(context)
                     },

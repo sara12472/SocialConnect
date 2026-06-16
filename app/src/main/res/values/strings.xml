@@ -1,6 +1,65 @@
 <resources>
     <string name="app_name">SocialConnect</string>
     <string name="web_client_id">715040392171-0lp2rrc4ukqs1qnbvhon94ibbbcgjtgi.apps.googleusercontent.com</string>
+    <string name="create_account">Create Account</string>
+    <string name="continue_text">Continue</string>
+    <string name="welcomeBack_text">Welcome Back</string>
+    <string name="LoginToContinue_text">Login To Continue</string>
+    <string name="ForgetPassword_text">Forget Password</string>
+    <string name="Login_text">Login</string>
+    <string name="DoNotHaveAnAccount_text" >Don\'t have an Account? </string>
+    <string name="SignUp_text">SignUp</string>
+    <string name="ContinueWithGoogle_text">Continue with Google</string>
+    <string name="AlreadyHaveAnAccount_text" >Already have an Account? </string>
+    <string name="Social_text" >Social </string>
+    <string name="Connect_text" >Connect </string>
+    <string name="CreatePost_text" >Create Post </string>
+    <string name="Post_text" >Post </string>
+    <string name="EditProfile_text" >Edit Profile </string>
+    <string name="EditPicture_text" >Edit Picture </string>Enter your email to reset password
+    <string name="ResetPassword_text" >Enter your email to reset password </string>
+    <string name="BackToLogin_text" >Back To Login </string>
+    <string name="Sending_text" >Sending... </string>
+    <string name="ResetLink_text" >Send Reset Link </string>
+    <string name="Notification_text" >Notification</string>
+    <string name="NoNotification_text" >No notifications yet</string>
+    <string name="Followers_text" >Followers</string>
+    <string name="Following_text" >Following</string>
+    <string name="Share_text" >Share</string>
+    <string name="Follow_text" >Follow</string>
+    <string name="Setting_text" >Setting</string>
+    <string name="SavedPost_text" >Saved Post</string>
+    <string name="Logout_text" >Logout</string>
+    <string name="Message_text" >Message</string>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 </resources>

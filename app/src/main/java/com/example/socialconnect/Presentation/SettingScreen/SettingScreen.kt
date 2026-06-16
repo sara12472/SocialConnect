@@ -37,10 +37,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.socialconnect.Navigation.Screen
+import com.example.socialconnect.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,13 +69,13 @@ fun SettingsScreen(
         ) {
 
             CustomAppBar(
-                title = "Settings",
+                title = stringResource(R.string.Setting_text),
                 onBackClick = { navController.popBackStack() }
             )
 
 
             SettingsItem(
-                title = "Saved Posts",
+                title =stringResource(R.string.SavedPost_text),
                 icon = Icons.Outlined.BookmarkBorder,
                 onClick = {
                     navController.navigate(Screen.SavedPostScreen.route)
@@ -82,7 +84,7 @@ fun SettingsScreen(
 
             )
             SettingsItem(
-                title =  "Notifications ",
+                title =  stringResource(R.string.Notification_text),
 
                 icon = if (state.notificationsEnabled)
                     Icons.Outlined.Notifications
@@ -96,7 +98,7 @@ fun SettingsScreen(
 
 
             SettingsItem(
-                title = "Logout",
+                title = stringResource(R.string.Logout_text),
                 icon = Icons.Outlined.Logout,
                 onClick = {
                     viewModel.logout()

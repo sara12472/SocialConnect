@@ -17,8 +17,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.socialconnect.R
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -45,7 +47,7 @@ fun ForgetPasswordScreen(
 
         // TITLE
         Text(
-            text = "Forgot Password",
+            text = stringResource(R.string.ForgetPassword_text),
             color = MaterialTheme.colorScheme.onPrimary,
             style = MaterialTheme.typography.headlineMedium
         )
@@ -53,7 +55,7 @@ fun ForgetPasswordScreen(
         Spacer(modifier = Modifier.height(6.dp))
 
         Text(
-            text = "Enter your email to reset password",
+            text = stringResource(R.string.ResetPassword_text),
             color = MaterialTheme.colorScheme.primary,
             style = MaterialTheme.typography.bodyMedium
         )
@@ -90,7 +92,7 @@ fun ForgetPasswordScreen(
 
         // BUTTON
         AppButton(
-            text = if (state.isLoading) "Sending..." else "Send Reset Link",
+            text = if (state.isLoading) stringResource(R.string.Sending_text) else stringResource(R.string.ResetLink_text),
             onClick = viewModel::onSendClick,
             modifier = Modifier.fillMaxWidth()
         )
@@ -99,7 +101,7 @@ fun ForgetPasswordScreen(
 
         // BACK TO LOGIN
         Text(
-            text = "Back to Login",
+            text = stringResource(R.string.BackToLogin_text),
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.clickable {
                 navController.popBackStack()

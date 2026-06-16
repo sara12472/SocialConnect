@@ -9,10 +9,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 
+
+
 class SavedPostRepositoryImpl(
     private val firestore: FirebaseFirestore,
     private val auth: FirebaseAuth
 ) : SavedPostRepository {
+
     override suspend fun savePost(postId: String) {
 
         val userId = auth.currentUser?.uid ?: return
@@ -29,6 +32,7 @@ class SavedPostRepositoryImpl(
             )
             .await()
     }
+
     override suspend fun unSavePost(postId: String) {
 
         val userId = auth.currentUser?.uid ?: return
@@ -42,32 +46,41 @@ class SavedPostRepositoryImpl(
     }
     override fun getSavedPostIds(userId: String): Flow<List<String>> = callbackFlow {
 
-        val listener = firestore.collection("users")
+        val ref = firestore.collection("users")
             .document(userId)
             .collection("savedPosts")
-            .addSnapshotListener { snapshot, error ->
 
-                if (error != null || snapshot == null) {
-                    trySend(emptyList())
-                    return@addSnapshotListener
-                }
+        val listener = ref.addSnapshotListener { snapshot, error ->
 
-                val ids = snapshot.documents.map { it.id }
-                trySend(ids)
+            if (error != null) {
+                trySend(emptyList())
+                return@addSnapshotListener
             }
 
-        awaitClose { listener.remove() }
-    }
+            val ids = snapshot?.documents?.map { it.id } ?: emptyList()
 
-    override suspend fun getSavedPosts(): List<Post> {
-        TODO("Not yet implemented")
+            trySend(ids)
+        }
+
+        awaitClose {
+            listener.remove()
+            close() // 🔥 ADD THIS
+        }
     }
 
     override suspend fun isPostSaved(postId: String): Boolean {
-        TODO("Not yet implemented")
+
+        val userId = auth.currentUser?.uid ?: return false
+
+        val doc = firestore.collection("users")
+            .document(userId)
+            .collection("savedPosts")
+            .document(postId)
+            .get()
+            .await()
+
+        return doc.exists()
     }
-
-
-
-
 }
+
+

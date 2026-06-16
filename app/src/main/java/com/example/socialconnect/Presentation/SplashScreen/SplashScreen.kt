@@ -32,7 +32,7 @@ fun SplashScreen(navController: NavController,
     val state by viewModel.state.collectAsState()
 
 
-    // Navigate when ViewModel says ready
+
     LaunchedEffect(state.isReadyToNavigate) {
         if (state.isReadyToNavigate) {
             navController.navigate(Screen.AuthScreen.route) {
@@ -41,17 +41,16 @@ fun SplashScreen(navController: NavController,
         }
     }
 
-    // Animation (UI only concern)
+
     val scale = remember { Animatable(0.7f) }
     val alpha = remember { Animatable(0f) }
 
     LaunchedEffect(Unit) {
-        // start animation
+
         alpha.animateTo(1f, tween(600))
         scale.animateTo(1f, tween(900))
 
-        // small delay for smooth feel
-        kotlinx.coroutines.delay(1200)
+        kotlinx.coroutines.delay(300)
 
 
     }

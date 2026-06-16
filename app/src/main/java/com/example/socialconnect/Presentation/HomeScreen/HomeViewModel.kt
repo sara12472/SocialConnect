@@ -21,6 +21,7 @@ import com.example.socialconnect.Domain.UseCases.NotificationUseCase.SendNotific
 import com.example.socialconnect.Domain.UseCases.ToggleLikeUseCase
 import com.example.socialconnect.Domain.UseCases.PostUseCase.UnSavePostUseCase
 import com.example.socialconnect.Domain.UseCases.FCMTokenUseCase.UpdateFcmTokenUseCase
+import com.example.socialconnect.Domain.UseCases.PostUseCase.SavedPostUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,9 +43,9 @@ class HomeViewModel @Inject constructor(
     private val updateFcmTokenUseCase: UpdateFcmTokenUseCase,
     private val sendNotificationUseCase: SendNotificationUseCase,
     private  val getNotificationsUseCase: GetNotificationsUseCase,
-    private  val savedPostsUseCase: GetSavedPostsUseCase,
+    private val savedPostUseCase: SavedPostUseCase,
     private val unSavePostUseCase: UnSavePostUseCase,
-    private  val getSavedPostsUseCase: GetSavedPostsUseCase,
+    private val getSavedPostsUseCase: GetSavedPostsUseCase,
 
 
 
@@ -414,14 +415,12 @@ class HomeViewModel @Inject constructor(
     fun onSaveClick(post: Post) {
         viewModelScope.launch {
 
-            val userId = getCurrentUserIdUseCase() ?: return@launch
-
             val isSaved = state.value.savedPostIds.contains(post.postId)
 
             if (isSaved) {
                 unSavePostUseCase(post.postId)
             } else {
-                savedPostsUseCase(post.postId)
+                savedPostUseCase(post.postId)
             }
         }
     }

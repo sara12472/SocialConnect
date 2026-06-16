@@ -8,6 +8,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.socialconnect.Presentation.AuthScreen.AuthScreen
+import com.example.socialconnect.Presentation.ChatScreen.ChatScreen
+import com.example.socialconnect.Presentation.ChatScreen.ConversationScreen
+
 import com.example.socialconnect.Presentation.CreatePost.CreatePostScreen
 import com.example.socialconnect.Presentation.EditProfileScreen.EditProfileScreen
 import com.example.socialconnect.Presentation.ForgotPassword.ForgetPasswordScreen
@@ -56,6 +59,32 @@ fun AppNavigation() {
         }
         composable(Screen.SavedPostScreen.route){
           SavedPostScreen(navController)
+        }
+        composable(
+            route = Screen.ConversationScreen.route,
+            arguments = listOf(
+                navArgument("otherUserId") {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+
+            val otherUserId =
+                backStackEntry.arguments
+                    ?.getString("otherUserId") ?: ""
+
+            ConversationScreen(
+                otherUserId = otherUserId,
+                onBackClick ={navController.popBackStack()}
+            )
+        }
+        composable(Screen.ChatScreen.route){
+          ChatScreen(  onChatClick = { otherUserId ->
+
+              navController.navigate(
+                  Screen.ConversationScreen.createRoute(otherUserId)
+              )
+          }, navController = navController)
         }
         composable(
             route = "create_post?mediaUri={mediaUri}&mediaType={mediaType}",

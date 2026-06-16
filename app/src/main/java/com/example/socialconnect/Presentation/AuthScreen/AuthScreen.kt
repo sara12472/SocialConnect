@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import com.example.socialconnect.R
@@ -27,6 +28,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -128,7 +130,7 @@ fun AuthScreen(navController: NavController,
             ) {
 
                 AppButton(
-                    text = "Continue with Google",
+                    text = stringResource(R.string.ContinueWithGoogle_text),
                     containerColor = MaterialTheme.colorScheme.onBackground,
                     onClick = { viewModel.signInWithGoogle() }
                 )
@@ -136,7 +138,7 @@ fun AuthScreen(navController: NavController,
                 Spacer(modifier = Modifier.height(12.dp))
 
                 AppButton(
-                    text = "SignUp",
+                    text = stringResource(R.string.SignUp_text),
                     onClick = {
                         navController.navigate(Screen.SignUpScreen.route)
                     }
@@ -149,13 +151,15 @@ fun AuthScreen(navController: NavController,
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text="Already have an account? ",
+                    Text(text=stringResource(R.string.AlreadyHaveAnAccount_text ),
                         color = MaterialTheme.colorScheme.onPrimary,
                         style = MaterialTheme.typography.labelSmall
                     )
+                    Spacer(modifier = Modifier.width(3.dp))
+
 
                     Text(
-                        text = " Login",
+                        text = stringResource(R.string.Login_text),
                         color = MaterialTheme.colorScheme.primary,
                         style= MaterialTheme.typography.labelSmall,
                         modifier = Modifier.clickable {

@@ -3,6 +3,7 @@ package com.example.socialconnect.Data.Repository
 
 import com.example.socialconnect.Data.Model.Post
 import com.example.socialconnect.Domain.Repository.PostRepository
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 
@@ -129,15 +130,22 @@ class PostRepositoryImpl @Inject constructor(
         }
     }
     override suspend fun getPostsByIds(ids: List<String>): List<Post> {
+
         if (ids.isEmpty()) return emptyList()
 
-        val result = firestore.collection("posts")
-            .whereIn("postId", ids.take(10)) // Firestore limit
-            .get()
-            .await()
+        val chunks = ids.chunked(10)
+        val result = mutableListOf<Post>()
 
-        return result.documents.mapNotNull {
-            it.toObject(Post::class.java)
+        for (chunk in chunks) {
+
+            val snapshot = firestore.collection("posts")
+                .whereIn(FieldPath.documentId(), chunk)
+                .get()
+                .await()
+
+            result.addAll(snapshot.toObjects(Post::class.java))
         }
+
+        return result
     }
 }

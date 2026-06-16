@@ -33,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -112,7 +113,7 @@ fun EditProfileScreen(
                 Spacer(modifier = Modifier.width(15.dp))
 
                 Text(
-                    text = "Edit Profile",
+                    text = stringResource(R.string.EditProfile_text),
                     style = MaterialTheme.typography.titleLarge
                 )
             }
@@ -148,7 +149,7 @@ fun EditProfileScreen(
 
                     Spacer(modifier = Modifier.height(10.dp))
 
-                    Text(text = "Edit Picture",
+                    Text(text =stringResource(R.string.EditPicture_text),
                         style=MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.clickable {

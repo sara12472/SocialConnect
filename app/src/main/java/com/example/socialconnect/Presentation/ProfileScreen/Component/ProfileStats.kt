@@ -12,8 +12,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.socialconnect.R
+
 
 @Composable
 fun ProfileStatsSection(
@@ -41,9 +44,9 @@ fun ProfileStatsSection(
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            StatItem(title = "Followers", number = followers)
-            StatItem(title = "Following", number = following)
-            StatItem(title = "Posts", number = posts)
+            StatItem(title = stringResource(R.string.Followers_text), number = followers)
+            StatItem(title = stringResource(R.string.Following_text), number = following)
+            StatItem(title = stringResource(R.string.Post_text), number = posts)
         }
     }
 }

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -19,6 +20,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -28,6 +30,7 @@ import com.example.socialconnect.Component.AppButton
 import com.example.socialconnect.Component.AppTextField
 import com.example.socialconnect.Navigation.Screen
 import com.example.socialconnect.ui.theme.ElectricBlue
+import com.example.socialconnect.R
 
 @Composable
 fun LoginScreen(
@@ -58,7 +61,7 @@ fun LoginScreen(
 
 
         Text(
-            text = "Welcome Back",
+            text = stringResource(R.string.welcomeBack_text),
             color = MaterialTheme.colorScheme.onPrimary,
             style = MaterialTheme.typography.headlineMedium
         )
@@ -66,7 +69,7 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(4.dp))
 
         Text(
-            text = "Login to continue",
+            text = stringResource(R.string.LoginToContinue_text),
             color = MaterialTheme.colorScheme.primary,
             style = MaterialTheme.typography.bodyMedium
         )
@@ -95,7 +98,7 @@ fun LoginScreen(
 
 
         Text(
-            text = "Forgot Password?",
+            text = stringResource(R.string.ForgetPassword_text),
             color = MaterialTheme.colorScheme.primary,
             style = MaterialTheme.typography.labelSmall,
             modifier = Modifier
@@ -108,7 +111,7 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(20.dp))
 
         AppButton(
-            text = "Login",
+            text = stringResource(R.string.Login_text),
             onClick ={viewModel.login()},
             modifier = Modifier.fillMaxWidth()
         )
@@ -133,14 +136,16 @@ fun LoginScreen(
         Row(
             horizontalArrangement = Arrangement.Center
         ) {
-            Text(text="Don't have an account? ",
+            Text(text=stringResource(R.string.DoNotHaveAnAccount_text),
                 color = MaterialTheme.colorScheme.onPrimary,
                 style = MaterialTheme.typography.labelSmall
 
                 )
+            Spacer(modifier = Modifier.width(3.dp))
+
 
             Text(
-                text = "Sign Up",
+                text = stringResource(R.string.SignUp_text),
                 color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.labelSmall,
                 modifier = Modifier.clickable {

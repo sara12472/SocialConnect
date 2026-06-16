@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -30,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.socialconnect.Component.VideoThumbnailItem
 import com.example.socialconnect.Data.Model.Post
 
 @Composable
@@ -41,20 +43,37 @@ fun SavedPostScreen(
 
     val state = viewModel.state.collectAsState().value
 
-    Scaffold(
-        topBar = {
-            CustomAppBar(
-                title = "Saved",
-                onBackClick = { navController.popBackStack() }
-            )
-        }
-    ) { padding ->
 
-        SavedGrid(
-            posts = state.savedPosts,
-            modifier = Modifier.padding(padding)
-        )
-    }
+
+        Scaffold { padding ->
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+            ) {
+
+                CustomAppBar(
+                    title = "Saved",
+                    onBackClick = { navController.popBackStack() }
+                )
+
+                if (state.isLoading) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("Loading...")
+                    }
+                } else {
+                    SavedGrid(
+                        posts = state.savedPosts,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+            }
+        }
+
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -78,42 +97,29 @@ fun SavedGrid(
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
-        modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(2.dp)
+        modifier = modifier.fillMaxSize().padding(horizontal = 5.dp),
+
     ) {
 
         items(posts) { post ->
 
-            Box(
-                modifier = Modifier
-                    .aspectRatio(1f)
-                    .padding(2.dp)
-                    .clickable {
-
-                    }
-            ) {
+            if (post.mediaType == "image") {
 
                 AsyncImage(
                     model = post.mediaUrl,
                     contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .size(120.dp)
+                        .aspectRatio(1f),
+                    contentScale = ContentScale.Crop
                 )
 
+            } else {
 
-                if (post.mediaType == "video") {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.PlayArrow,
-                            contentDescription = null,
-                            tint = Color.White
-                        )
-                    }
-                }
+                VideoThumbnailItem(
+                    videoUrl = post.mediaUrl
+                )
             }
         }
     }

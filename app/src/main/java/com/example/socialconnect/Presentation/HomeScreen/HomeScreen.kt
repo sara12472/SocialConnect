@@ -157,7 +157,7 @@ fun HomeScreen( navController: NavController,
                         onUserClick = {
                             navController.navigate(Screen.ProfileScreen.createRoute(post.userId))
                         },
-                        onSaveClick = {viewModel.onSaveClick(it)},
+                        onSaveClick = { viewModel.onSaveClick(post)},
                         onLikeClick = { viewModel.onLikeClick(it) },
                         onCommentClick = { viewModel.openComments(it.postId) },
                         onShareClick = { sharedPost ->
@@ -218,7 +218,7 @@ fun HomeScreen( navController: NavController,
                             }
 
                             1 -> {
-                                // Chat Screen
+                                navController.navigate(Screen.ChatScreen.route)
                             }
 
                             2 -> {

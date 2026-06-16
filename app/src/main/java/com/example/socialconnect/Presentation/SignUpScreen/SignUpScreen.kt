@@ -34,6 +34,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -93,7 +94,7 @@ import com.example.socialconnect.ui.theme.ElectricBlue
     Spacer(modifier = Modifier.weight(1f))
 
     Text(
-     text = "Create Account",
+     text = stringResource(R.string.create_account),
      style = MaterialTheme.typography.titleLarge
     )
 
@@ -242,9 +243,9 @@ import com.example.socialconnect.ui.theme.ElectricBlue
      .fillMaxWidth()
      .padding(bottom = 20.dp),
     text = if (state.step == 4)
-     "Create Account"
+     stringResource(R.string.create_account)
     else
-     "Continue"
+     stringResource(R.string.continue_text)
 
    )
 

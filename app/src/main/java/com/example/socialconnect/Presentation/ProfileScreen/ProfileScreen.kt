@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.media.browse.MediaBrowser
 import android.net.Uri
+import com.example.socialconnect.R
 import androidx.annotation.OptIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -39,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -50,6 +52,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import androidx.media3.common.MediaItem
 import com.example.socialconnect.Component.AppButton
+import com.example.socialconnect.Component.VideoThumbnailItem
 import com.example.socialconnect.Navigation.Screen
 import com.example.socialconnect.Presentation.ProfileScreen.Component.ProfileHeader
 import com.example.socialconnect.Presentation.ProfileScreen.Component.ProfileStatsSection
@@ -128,7 +131,7 @@ fun ProfileScreen(
                     ) {
 
                         AppButton(
-                            text = "Edit Profile",
+                            text = stringResource(R.string.EditProfile_text),
                             onClick = {
                                 navController.navigate(Screen.EditProfileScreen.route)
                             },
@@ -136,7 +139,7 @@ fun ProfileScreen(
                         )
 
                         AppButton(
-                            text = "Share",
+                            text = stringResource(R.string.Share_text),
                             onClick = {
                                 shareProfile(
                                     context = context,
@@ -160,28 +163,66 @@ fun ProfileScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
 
-                        AppButton(
-                            text = if (state.isFollowing) "Following" else "Follow",
-                            onClick = {
-                                viewModel.onFollowClick(state.userId)
-                            },
-                            modifier = Modifier.weight(1f).height(40.dp)
-                        )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 10.dp),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
 
-                        AppButton(
-                            text = "Share",
-                            onClick = {
-                                shareProfile(
-                                    context = context,
-                                    username = state.username,
-                                    userId = state.userId
+                            if (state.isOwnProfile) {
+
+                                // 👤 OWN PROFILE
+                                AppButton(
+                                    text = stringResource(R.string.EditProfile_text),
+                                    onClick = {
+                                        navController.navigate(Screen.EditProfileScreen.route)
+                                    },
+                                    modifier = Modifier.weight(1f).height(40.dp)
                                 )
 
-                            },
-                            modifier = Modifier.weight(1f).height(40.dp),
-                            containerColor = MaterialTheme.colorScheme.surface,
-                            contentColor = MaterialTheme.colorScheme.onBackground
-                        )
+                                AppButton(
+                                    text = stringResource(R.string.Share_text),
+                                    onClick = {
+                                        shareProfile(
+                                            context = context,
+                                            username = state.username,
+                                            userId = state.userId
+                                        )
+                                    },
+                                    modifier = Modifier.weight(1f).height(40.dp),
+                                    containerColor = MaterialTheme.colorScheme.surface,
+                                    contentColor = MaterialTheme.colorScheme.onBackground
+                                )
+
+                            } else {
+
+                                // 👤 OTHER USER PROFILE
+                                AppButton(
+                                    text = if (state.isFollowing)
+                                        stringResource(R.string.Following_text)
+                                    else
+                                        stringResource(R.string.Follow_text),
+                                    onClick = {
+                                        viewModel.onFollowClick(state.userId)
+                                    },
+                                    modifier = Modifier.weight(1f).height(40.dp)
+                                )
+
+                                AppButton(
+                                    text = stringResource(R.string.Message_text),
+                                    onClick = {
+                                        navController.navigate(
+                                            "conversation_screen/${state.userId}"
+                                        )
+                                    },
+                                    modifier = Modifier.weight(1f).height(40.dp),
+                                    containerColor = MaterialTheme.colorScheme.surface,
+                                    contentColor = MaterialTheme.colorScheme.onBackground
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -256,43 +297,7 @@ fun ShowProfileScreen(){
     )
 }
 
-@OptIn(androidx.media3.common.util.UnstableApi::class)
-@Composable
-fun VideoThumbnailItem(videoUrl: String) {
 
-    val context = LocalContext.current
-
-    val exoPlayer = remember(videoUrl) {
-        ExoPlayer.Builder(context).build().apply {
-
-            setMediaItem(MediaItem.fromUri(Uri.parse(videoUrl)))
-
-            prepare()
-
-            playWhenReady = false
-        }
-    }
-
-    DisposableEffect(Unit) {
-        onDispose {
-            exoPlayer.release()
-        }
-    }
-
-    AndroidView(
-        factory = {
-            PlayerView(it).apply {
-                player = exoPlayer
-                useController = false
-
-            }
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .aspectRatio(1f),
-
-    )
-}
 fun shareProfile(
     context: Context,
     username: String,

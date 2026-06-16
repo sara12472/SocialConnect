@@ -6,6 +6,7 @@ import com.example.socialconnect.Data.Repository.CommentRepositoryImpl
 import com.example.socialconnect.Data.Repository.EditProfileRepositoryImpl
 import com.example.socialconnect.Data.Repository.FcmRepositoryImpl
 import com.example.socialconnect.Data.Repository.FollowRepositoryImpl
+import com.example.socialconnect.Data.Repository.MessageRepositoryImpl
 import com.example.socialconnect.Data.Repository.NotificationRepositoryImpl
 import com.example.socialconnect.Data.Repository.PostRepositoryImpl
 import com.example.socialconnect.Data.Repository.SavedPostRepositoryImpl
@@ -14,6 +15,7 @@ import com.example.socialconnect.Domain.Repository.CommentRepository
 import com.example.socialconnect.Domain.Repository.EditProfileRepository
 import com.example.socialconnect.Domain.Repository.FcmRepository
 import com.example.socialconnect.Domain.Repository.FollowRepository
+import com.example.socialconnect.Domain.Repository.MessageRepository
 import com.example.socialconnect.Domain.Repository.NotificationRepository
 import com.example.socialconnect.Domain.Repository.PostRepository
 import com.example.socialconnect.Domain.Repository.SavedPostRepository
@@ -123,4 +125,14 @@ object FirebaseModule {
             auth
         )
     }
+    @Provides
+    @Singleton
+    fun provideMessageRepository(
+        firestore: FirebaseFirestore
+    ): MessageRepository {
+
+        return MessageRepositoryImpl(firestore)
+    }
+
+
 }
