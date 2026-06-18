@@ -1,7 +1,9 @@
 package com.example.socialconnect.Presentation.CreatePost
 
 import CustomAppBar
+import android.content.Context
 import android.net.Uri
+import android.util.Log
 import com.example.socialconnect.R
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,6 +46,10 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.socialconnect.Component.AppButton
 import androidx.media3.common.MediaItem
+import androidx.media3.common.util.UnstableApi
+import java.io.File
+
+@androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,74 +58,96 @@ fun CreatePostScreen(
     viewModel: CreatePostViewModel = hiltViewModel(),
     mediaUri: String,
     mediaType: String,
+    postId: String? = null,
+
 ) {
 
     val state = viewModel.state.collectAsState().value
+    Log.d("VIDEO_URI", state.selectedMediaUri)
     val context = LocalContext.current
     val scrollState = rememberScrollState()
 
-    LaunchedEffect(mediaUri, mediaType) {
-        if (state.selectedMediaUri.isEmpty()) {
-            viewModel.setSelectedMedia(Uri.parse(mediaUri), mediaType)
+    val fixedUri = remember(state.selectedMediaUri) {
+        getRealPathUri(context, Uri.parse(state.selectedMediaUri))
+    }
+
+
+    LaunchedEffect(postId, mediaUri, mediaType) {
+        android.util.Log.d(
+            "CREATE_POST",
+            "postId=$postId, mediaUri=$mediaUri, mediaType=$mediaType"
+        )
+
+
+        if (!postId.isNullOrBlank()) {
+            viewModel.loadPost(postId)
+        } else if (mediaUri.isNotBlank()) {
+            viewModel.setSelectedMedia(
+                Uri.parse(mediaUri),
+                mediaType
+            )
         }
     }
 
     LaunchedEffect(state.isPosted) {
         if (state.isPosted) navController.popBackStack()
     }
-    Scaffold(
-        containerColor = Color.Transparent
-    ) { innerPadding ->
+    Log.d("CREATE_POST", "postId = $postId")
+    Log.d("CREATE_POST", "mediaUri = $mediaUri")
+    Log.d("CREATE_POST", "mediaType = $mediaType")
+
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
-                .imePadding()
                 .navigationBarsPadding()
         ) {
 
             CustomAppBar(
-                title = stringResource(R.string.CreatePost_text),
+                title = if(state.isEditMode)
+                    stringResource(R.string.UpdatePost_text)
+                else
+                    stringResource(R.string.CreatePost_text),
                 onBackClick = {
                     navController.popBackStack()
                 }
             )
 
-            if (state.mediaType == "image") {
+            if (state.selectedMediaUri.isNotBlank() && state.mediaType == "image") {
 
-                AsyncImage(
-                    model = state.selectedMediaUri,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(300.dp)
-                )
+                key(state.selectedMediaUri) {
+                    AsyncImage(
+                        model = state.selectedMediaUri,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(300.dp)
+                    )
+                }
 
-            } else if (state.mediaType == "video") {
+            } else if (state.selectedMediaUri.isNotBlank() && state.mediaType == "video") {
+                val uri = remember(state.selectedMediaUri) {
+                    Uri.parse(state.selectedMediaUri)
+                }
 
-                val player = remember(state.selectedMediaUri) {
+                val exoPlayer = remember(uri) {
                     ExoPlayer.Builder(context).build().apply {
-                        setMediaItem(
-                            MediaItem.fromUri(
-                                Uri.parse(state.selectedMediaUri)
-                            )
-                        )
+                        setMediaItem(MediaItem.fromUri(uri))
                         prepare()
+                        playWhenReady = true
                     }
                 }
 
-                DisposableEffect(player) {
-                    onDispose {
-                        player.release()
-                    }
+                DisposableEffect(exoPlayer) {
+                    onDispose { exoPlayer.release() }
                 }
 
                 AndroidView(
-                    factory = {
-                        PlayerView(it).apply {
-                            this.player = player
+                    factory = { ctx ->
+                        PlayerView(ctx).apply {
+                            player = exoPlayer
                             useController = true
+                            resizeMode = androidx.media3.ui.AspectRatioFrameLayout.RESIZE_MODE_FIT
                         }
                     },
                     modifier = Modifier
@@ -126,6 +155,12 @@ fun CreatePostScreen(
                         .height(300.dp)
                 )
             }
+
+
+
+
+
+
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -161,9 +196,16 @@ fun CreatePostScreen(
             } else {
 
                 AppButton(
-                    text = stringResource(R.string.Post_text),
+                    text = if(state.isEditMode)
+                       stringResource(R.string.Update_text)
+                    else
+                        stringResource(R.string.Post_text),
                     onClick = {
-                        viewModel.createPost(context)
+                        if(state.isEditMode){
+                            viewModel.updatePost()
+                        }else{
+                            viewModel.createPost(context)
+                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -171,5 +213,18 @@ fun CreatePostScreen(
                 )
             }
         }
+    }
+fun getRealPathUri(context: Context, uri: Uri): Uri {
+    return try {
+        val inputStream = context.contentResolver.openInputStream(uri)
+        val file = File(context.cacheDir, "temp_video.mp4")
+
+        file.outputStream().use { output ->
+            inputStream?.copyTo(output)
+        }
+
+        Uri.fromFile(file)
+    } catch (e: Exception) {
+        uri
     }
 }

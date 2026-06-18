@@ -148,4 +148,33 @@ class PostRepositoryImpl @Inject constructor(
 
         return result
     }
+    override suspend fun deletePost(postId: String) {
+
+        firestore.collection("posts")
+            .document(postId)
+            .delete()
+            .await()
+    }
+    override suspend fun getPost(postId: String): Post {
+
+        return firestore.collection("posts")
+            .document(postId)
+            .get()
+            .await()
+            .toObject(Post::class.java) ?: Post()
+    }
+    override suspend fun updatePost(
+        postId: String,
+        caption: String
+    ) {
+
+        firestore.collection("posts")
+            .document(postId)
+            .update(
+                "caption",
+                caption
+            )
+            .await()
+    }
+
 }

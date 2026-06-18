@@ -87,13 +87,20 @@ fun AppNavigation() {
           }, navController = navController)
         }
         composable(
-            route = "create_post?mediaUri={mediaUri}&mediaType={mediaType}",
+            route = "create_post?mediaUri={mediaUri}&mediaType={mediaType}&postId={postId}",
             arguments = listOf(
                 navArgument("mediaUri") {
                     type = NavType.StringType
+                    defaultValue = ""
                 },
                 navArgument("mediaType") {
                     type = NavType.StringType
+                    defaultValue = ""
+                },
+                navArgument("postId") {
+                    type = NavType.StringType
+                    defaultValue = ""
+                    nullable = true
                 }
             )
         ) { backStackEntry ->
@@ -107,7 +114,8 @@ fun AppNavigation() {
             CreatePostScreen(
                 navController = navController,
                 mediaUri = mediaUri,
-                mediaType = mediaType
+                mediaType = mediaType,
+                postId = backStackEntry.arguments?.getString("postId")
             )
         }
     }

@@ -31,9 +31,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
@@ -42,6 +45,10 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import com.example.socialconnect.R
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,6 +67,7 @@ import coil.compose.AsyncImage
 import com.example.socialconnect.Component.AppTextField
 import com.example.socialconnect.Data.Model.Comment
 import com.example.socialconnect.Data.Model.CommentReply
+import com.example.socialconnect.Data.Model.Post
 import com.example.socialconnect.Data.Model.dummyStories
 import com.example.socialconnect.Navigation.Screen
 import com.example.socialconnect.Presentation.HomeScreen.Component.BottomBar
@@ -68,6 +76,7 @@ import com.example.socialconnect.Presentation.HomeScreen.Component.PostCard
 import com.example.socialconnect.Presentation.HomeScreen.Component.ProfileFloatingButton
 import com.example.socialconnect.Presentation.HomeScreen.Component.StoryRow
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen( navController: NavController,
     viewModel: HomeViewModel = hiltViewModel(),
@@ -79,6 +88,13 @@ fun HomeScreen( navController: NavController,
 
     val context = LocalContext.current
     val listState = rememberLazyListState()
+    var showPostOptions by remember {
+        mutableStateOf(false)
+    }
+
+    var selectedPost by remember {
+        mutableStateOf<Post?>(null)
+    }
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -160,6 +176,10 @@ fun HomeScreen( navController: NavController,
                         onSaveClick = { viewModel.onSaveClick(post)},
                         onLikeClick = { viewModel.onLikeClick(it) },
                         onCommentClick = { viewModel.openComments(it.postId) },
+                        onMoreClick = {
+                            selectedPost = it
+                            showPostOptions = true
+                        },
                         onShareClick = { sharedPost ->
 
                             val shareText = buildString {
@@ -268,6 +288,46 @@ fun HomeScreen( navController: NavController,
                     onClearReply = { viewModel.clearReply() }
                 )
             }
+        }
+    }
+    if(showPostOptions && selectedPost != null){
+
+        ModalBottomSheet(
+            onDismissRequest = {
+                showPostOptions = false
+            }
+        ) {
+
+            ListItem(
+                headlineContent = {
+                    Text("Edit Post")
+                },
+                leadingContent = {
+                    Icon(Icons.Default.Edit,null)
+                },
+                modifier = Modifier.clickable {
+
+                    navController.navigate("create_post?postId=${selectedPost!!.postId}")
+                    showPostOptions = false
+                }
+            )
+
+            ListItem(
+                headlineContent = {
+                    Text("Delete Post")
+                },
+                leadingContent = {
+                    Icon(Icons.Default.Delete,null)
+                },
+                modifier = Modifier.clickable {
+
+                    viewModel.deletePost(
+                        selectedPost!!.postId
+                    )
+
+                    showPostOptions = false
+                }
+            )
         }
     }
 }

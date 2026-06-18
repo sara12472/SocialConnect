@@ -1,18 +1,16 @@
 package com.example.socialconnect.Domain.UseCases.PostUseCase
 
-
-import com.example.socialconnect.Data.Model.Post
 import com.example.socialconnect.Domain.Repository.PostRepository
 import javax.inject.Inject
 
-class GetPostUseCase @Inject constructor(
+class UpdatePostUseCase @Inject constructor(
     private val repository: PostRepository
 ) {
 
     suspend operator fun invoke(
-        postId: String
-    ): Post? {
-
-        return repository.getPost(postId)
+        postId: String,
+        caption: String
+    ) {
+        repository.updatePost(postId, caption)
     }
 }

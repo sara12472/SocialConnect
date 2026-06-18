@@ -39,12 +39,12 @@ fun NotificationScreen(
 
     val state = viewModel.state.collectAsState().value
 
-    Scaffold { padding ->
+
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
+
         ) {
 
             CustomAppBar(
@@ -79,7 +79,7 @@ fun NotificationScreen(
             }
         }
     }
-}
+
 @Composable
 fun NotificationItem(notification: AppNotification) {
 

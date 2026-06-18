@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.socialconnect.Domain.UseCases.ChatUseCase.DeleteChatForUserUseCase
 import com.example.socialconnect.Domain.UseCases.ChatUseCase.GetChatsUseCase
 import com.example.socialconnect.Domain.UseCases.UserUsecase.GetCurrentUserIdUseCase
 import com.example.socialconnect.Domain.UseCases.UserUsecase.GetUserUseCase
@@ -17,7 +18,8 @@ import javax.inject.Inject
 class ChatViewModel @Inject constructor(
     private val getChatsUseCase: GetChatsUseCase,
     private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase,
-    private val getUserUseCase: GetUserUseCase
+    private val getUserUseCase: GetUserUseCase,
+    private val deleteChatForUserUseCase: DeleteChatForUserUseCase
 ) : ViewModel() {
 
     var state by mutableStateOf(ChatState())
@@ -74,6 +76,17 @@ class ChatViewModel @Inject constructor(
                     isLoading = false
                 )
             }
+        }
+    }
+    fun deleteChat(chatId: String) {
+        if (chatId.isBlank()) return
+
+        viewModelScope.launch {
+            deleteChatForUserUseCase(
+                chatId = chatId,
+                userId = state.currentUserId
+            )
+            loadChats()
         }
     }
 }

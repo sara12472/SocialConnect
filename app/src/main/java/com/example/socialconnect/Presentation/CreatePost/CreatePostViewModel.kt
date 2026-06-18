@@ -5,10 +5,13 @@ import com.example.socialconnect.Domain.UseCases.UploadMediaUseCase
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.socialconnect.Data.Model.Post
 import com.example.socialconnect.Domain.UseCases.PostUseCase.CreatePostUseCase
+import com.example.socialconnect.Domain.UseCases.PostUseCase.GetPostUseCase
+import com.example.socialconnect.Domain.UseCases.PostUseCase.UpdatePostUseCase
 import com.example.socialconnect.Domain.UseCases.UserUsecase.GetCurrentUserIdUseCase
 import com.example.socialconnect.Domain.UseCases.UserUsecase.GetUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,7 +29,9 @@ class CreatePostViewModel @Inject constructor(
     private val createPostUseCase: CreatePostUseCase,
     private val getUserUseCase: GetUserUseCase,
 
-    private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase
+    private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase,
+    private val getPostUseCase: GetPostUseCase,
+    private val updatePostUseCase: UpdatePostUseCase
 
 ) : ViewModel() {
 
@@ -43,10 +48,10 @@ class CreatePostViewModel @Inject constructor(
         )
     }
 
-    fun setSelectedMedia(
-        uri: Uri,
-        type: String
-    ) {
+    fun setSelectedMedia(uri: Uri, type: String) {
+
+
+        if (_state.value.isEditMode) return
 
         selectedUri = uri
 
@@ -109,6 +114,48 @@ class CreatePostViewModel @Inject constructor(
                     error = e.message ?: "Something went wrong"
                 )
             }
+        }
+    }
+    fun loadPost(postId: String) {
+        Log.d("CREATE_POST", "loadPost called with = $postId")
+        if (postId.isBlank()) return
+
+        viewModelScope.launch {
+
+            val post = getPostUseCase(postId) ?: return@launch
+
+            Log.d("CREATE_POST", "POST LOADED: $post")
+
+            _state.value = _state.value.copy(
+                postId = post.postId,
+                caption = post.caption,
+                selectedMediaUri = post.mediaUrl,
+                mediaType = post.mediaType,
+                isEditMode = true
+            )
+
+            Log.d("CREATE_POST", "STATE AFTER LOAD: ${_state.value}")
+        }
+    }
+    fun updatePost() {
+
+        viewModelScope.launch {
+
+            val postId = state.value.postId
+
+            if (postId.isBlank()) return@launch
+
+            _state.value = _state.value.copy(isLoading = true)
+
+            updatePostUseCase(
+                postId,
+                state.value.caption
+            )
+
+            _state.value = _state.value.copy(
+                isLoading = false,
+                isPosted = true
+            )
         }
     }
 }

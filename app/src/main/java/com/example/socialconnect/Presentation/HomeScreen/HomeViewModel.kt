@@ -13,7 +13,6 @@ import com.example.socialconnect.Domain.UseCases.CommentUseCase.GetCommentsUseCa
 import com.example.socialconnect.Domain.UseCases.UserUsecase.GetCurrentUserIdUseCase
 import com.example.socialconnect.Domain.UseCases.FCMTokenUseCase.GetFcmTokenUseCase
 import com.example.socialconnect.Domain.UseCases.NotificationUseCase.GetNotificationsUseCase
-import com.example.socialconnect.Domain.UseCases.PostUseCase.GetPostsUseCase
 import com.example.socialconnect.Domain.UseCases.CommentUseCase.GetRepliesUseCase
 import com.example.socialconnect.Domain.UseCases.PostUseCase.GetSavedPostsUseCase
 import com.example.socialconnect.Domain.UseCases.UserUsecase.GetUserUseCase
@@ -21,6 +20,8 @@ import com.example.socialconnect.Domain.UseCases.NotificationUseCase.SendNotific
 import com.example.socialconnect.Domain.UseCases.ToggleLikeUseCase
 import com.example.socialconnect.Domain.UseCases.PostUseCase.UnSavePostUseCase
 import com.example.socialconnect.Domain.UseCases.FCMTokenUseCase.UpdateFcmTokenUseCase
+import com.example.socialconnect.Domain.UseCases.PostUseCase.DeletePostUseCase
+import com.example.socialconnect.Domain.UseCases.PostUseCase.GetAllPostsUseCase
 import com.example.socialconnect.Domain.UseCases.PostUseCase.SavedPostUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -31,7 +32,7 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getPostsUseCase: GetPostsUseCase,
+    private val getAllPostsUseCase: GetAllPostsUseCase,
     private val getUserUseCase: GetUserUseCase,
     private val toggleLikeUseCase: ToggleLikeUseCase,
     private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase,
@@ -46,6 +47,7 @@ class HomeViewModel @Inject constructor(
     private val savedPostUseCase: SavedPostUseCase,
     private val unSavePostUseCase: UnSavePostUseCase,
     private val getSavedPostsUseCase: GetSavedPostsUseCase,
+    private val deletePostUseCase: DeletePostUseCase,
 
 
 
@@ -67,7 +69,7 @@ class HomeViewModel @Inject constructor(
 
    private fun getPosts() {
         viewModelScope.launch {
-            getPostsUseCase().collect { posts ->
+            getAllPostsUseCase().collect { posts ->
                 _state.value = _state.value.copy(posts = posts)
             }
         }
@@ -437,6 +439,13 @@ class HomeViewModel @Inject constructor(
                     savedPostIds = ids
                 )
             }
+        }
+    }
+    fun deletePost(postId: String) {
+
+        viewModelScope.launch {
+
+            deletePostUseCase(postId)
         }
     }
 

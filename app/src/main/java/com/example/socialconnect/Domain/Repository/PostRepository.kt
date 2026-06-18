@@ -12,5 +12,12 @@ interface PostRepository {
     suspend fun toggleLike(postId: String, userId: String)
     fun getFeedPosts(followingIds: List<String>): Flow<List<Post>>
     suspend fun getPostsByIds(ids: List<String>): List<Post>
+    suspend fun deletePost(postId: String)
+    suspend fun getPost(postId: String): Post
+
+    suspend fun updatePost(
+        postId: String,
+        caption: String
+    )
 
 }

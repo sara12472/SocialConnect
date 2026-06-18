@@ -25,6 +25,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.FavoriteBorder
@@ -79,6 +80,7 @@ fun PostCard(
     onShareClick: (Post) -> Unit,
     savedPostIds: List<String>,
     onSaveClick: (Post) -> Unit,
+    onMoreClick: (Post) -> Unit,
 ) {
 
 
@@ -136,6 +138,21 @@ fun PostCard(
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
+                Spacer(modifier = Modifier.weight(1f))
+                if (post.userId == currentUserId) {
+
+                    IconButton(
+                        onClick = {
+                            onMoreClick(post)
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = "More"
+                        )
+                    }
+                }
+
             }
 
             // 🔵 POST IMAGE
@@ -277,7 +294,7 @@ fun PostCard(
                     Icon(
                         imageVector =
                             if (isSaved)
-                                Icons.Filled.Bookmark   // temporary (we'll improve)
+                                Icons.Filled.Bookmark
                             else
                                 Icons.Outlined.BookmarkBorder,
                         contentDescription = "Save",

@@ -47,7 +47,7 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.foundation.layout)
-    implementation(libs.androidx.compose.material3)
+   // implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.remote.creation.core)
     implementation(libs.androidx.compose.runtime)
     implementation(libs.androidx.compose.ui)
@@ -103,4 +103,5 @@ dependencies {
     implementation("androidx.media3:media3-ui:1.7.1")
 
     implementation("com.google.firebase:firebase-messaging")
+    //implementation("androidx.compose.material3:material3:1.2.1")
 }

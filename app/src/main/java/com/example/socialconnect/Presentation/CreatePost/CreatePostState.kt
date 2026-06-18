@@ -13,6 +13,8 @@ data class CreatePostState(
 
     val isPosted: Boolean = false,
 
-    val error: String = ""
+    val error: String = "",
+    val postId: String = "",
+    val isEditMode: Boolean = false
 
 )

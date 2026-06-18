@@ -2,22 +2,27 @@ package com.example.socialconnect.Presentation.ChatScreen
 
 
 import CustomAppBar
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -25,6 +30,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.socialconnect.Data.Model.Chat
+import androidx.compose.material3.*
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
+import androidx.compose.material3.rememberSwipeToDismissBoxState
+
+import androidx.compose.ui.graphics.Color
+
+
+
 
 @Composable
 fun ChatScreen(
@@ -36,7 +50,15 @@ fun ChatScreen(
     val state = viewModel.state
     val currentUserId = state.currentUserId
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    var selectedChat by remember { mutableStateOf<Chat?>(null) }
+
+    var showDeleteDialog by remember {
+        mutableStateOf(false)
+    }
+
+    Column(modifier = Modifier.fillMaxSize()
+        .imePadding()
+    ) {
 
         CustomAppBar(
             title = state.currentUserName,
@@ -89,27 +111,101 @@ fun ChatScreen(
 
         else {
             LazyColumn(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.weight(1f)
             ) {
-                items(state.chats) { chat ->
+                items(state.chats, key = { it.chatId + it.otherUserId }) { chat ->
 
-                    ChatItem(
-                        chat = chat,
-                        onClick = {
-
-                            val otherUserId =
-                                chat.participants.firstOrNull { it != currentUserId }
-
-                            if (!otherUserId.isNullOrBlank()) {
-                                onChatClick(otherUserId)
+                    val dismissState = rememberSwipeToDismissBoxState(
+                        confirmValueChange = { value ->
+                            if (value == SwipeToDismissBoxValue.EndToStart) {
+                                selectedChat = chat
+                                showDeleteDialog = true
                             }
+                            false
                         }
                     )
+                    SwipeToDismissBox(
+                        state = dismissState,
+                        enableDismissFromStartToEnd = false,
+                        enableDismissFromEndToStart = true,
+                        backgroundContent = {
+                            val color =
+                                if (dismissState.targetValue == SwipeToDismissBoxValue.Settled)
+                                    Color.Transparent
+                                else
+                                    Color.Red
+
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(8.dp)
+                                    .background(color, RoundedCornerShape(16.dp)),
+                                contentAlignment = Alignment.CenterEnd
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = null,
+                                    tint = Color.White
+                                )
+                            }
+                        }
+                    ) {
+                        ChatItem(
+                            chat = chat,
+                            onClick = {
+                                val otherUserId =
+                                    chat.participants.firstOrNull { it != currentUserId }
+
+                                if (!otherUserId.isNullOrBlank()) {
+                                    onChatClick(otherUserId)
+                                }
+                            }
+                        )
+                    }
+
                 }
             }
         }
     }
+    if (showDeleteDialog && selectedChat != null) {
+
+        val chatToDelete = selectedChat
+
+        AlertDialog(
+            onDismissRequest = {
+                showDeleteDialog = false
+            },
+            title = { Text("Delete Chat") },
+            text = { Text("Delete this chat for yourself?") },
+
+            confirmButton = {
+                TextButton(onClick = {
+
+                    showDeleteDialog = false
+                    selectedChat = null
+
+                    chatToDelete?.let {
+                        if (it.chatId.isNotBlank()) {
+                            viewModel.deleteChat(it.chatId)
+                        }
+                    }
+                }) {
+                    Text("Delete")
+                }
+            },
+
+            dismissButton = {
+                TextButton(onClick = {
+                    showDeleteDialog = false
+                    selectedChat = null
+                }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
 }
+
 
 
 @Composable

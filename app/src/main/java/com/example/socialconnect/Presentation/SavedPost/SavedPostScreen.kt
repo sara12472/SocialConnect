@@ -45,12 +45,12 @@ fun SavedPostScreen(
 
 
 
-        Scaffold { padding ->
+
 
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(padding)
+
             ) {
 
                 CustomAppBar(
@@ -74,7 +74,7 @@ fun SavedPostScreen(
             }
         }
 
-}
+
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

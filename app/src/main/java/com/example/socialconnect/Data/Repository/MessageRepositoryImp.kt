@@ -3,6 +3,7 @@ package com.example.socialconnect.Data.Repository
 import com.example.socialconnect.Data.Model.Chat
 import com.example.socialconnect.Data.Model.Message
 import com.example.socialconnect.Domain.Repository.MessageRepository
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.tasks.await
@@ -18,14 +19,17 @@ class MessageRepositoryImpl @Inject constructor(
 
         val snapshot = firestore
             .collection("chats")
-            .whereArrayContains(
-                "participants",
-                currentUserId
-            )
             .get()
             .await()
 
-        return snapshot.toObjects(Chat::class.java)
+        return snapshot.documents.mapNotNull { doc ->
+            doc.toObject(Chat::class.java)?.copy(
+                chatId = doc.id
+            )
+        }.filter { chat ->
+            chat.participants.contains(currentUserId) &&
+                    !chat.deletedFor.contains(currentUserId)
+        }
     }
     override suspend fun getMessages(chatId: String): List<Message> {
 
@@ -37,6 +41,7 @@ class MessageRepositoryImpl @Inject constructor(
 
             .get()
             .await()
+
 
         return snapshot.toObjects(Message::class.java)
     }
@@ -87,7 +92,8 @@ class MessageRepositoryImpl @Inject constructor(
         val chatData = mapOf(
             "participants" to listOf(currentUserId, otherUserId),
             "lastMessage" to "",
-            "lastMessageTime" to 0L
+            "lastMessageTime" to 0L,
+            "deletedFor" to emptyList<String>()
         )
 
         newChatRef.set(chatData).await()
@@ -120,5 +126,19 @@ class MessageRepositoryImpl @Inject constructor(
         newChatRef.set(chatData).await()
 
         return newChatRef.id
+    }
+    override suspend fun deleteChatForUser(
+        chatId: String,
+        userId: String
+    ) {
+        if (chatId.isBlank()) return
+
+        firestore.collection("chats")
+            .document(chatId)
+            .update(
+                "deletedFor",
+                FieldValue.arrayUnion(userId)
+            )
+            .await()
     }
 }

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
@@ -69,7 +70,7 @@ fun ConversationScreen(
     }
 
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize() .imePadding()) {
 
         Row(
             modifier = Modifier
@@ -105,7 +106,7 @@ fun ConversationScreen(
         LazyColumn(
             state = listState,
             modifier = Modifier
-                .weight(1f) // ⭐ MOST IMPORTANT
+                .weight(1f)
                 .padding(8.dp),
             reverseLayout = true
         ) {
@@ -197,11 +198,12 @@ fun MessageBubble(
                     )
                 )
                 .padding(10.dp)
+
         ) {
             Text(
                 text = message.text,
                 color = if (isMe)
-                    MaterialTheme.colorScheme.onPrimary
+                    MaterialTheme.colorScheme.background
                 else
                     MaterialTheme.colorScheme.onSurface
             )

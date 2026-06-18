@@ -31,6 +31,8 @@
     <string name="SavedPost_text" >Saved Post</string>
     <string name="Logout_text" >Logout</string>
     <string name="Message_text" >Message</string>
+    <string name="Update_text" >Update</string>
+    <string name="UpdatePost_text" >Update Post</string>
 
 
 

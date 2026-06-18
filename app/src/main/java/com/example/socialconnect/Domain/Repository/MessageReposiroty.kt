@@ -26,4 +26,8 @@ interface MessageRepository {
         currentUserId: String,
         otherUserId: String
     ): String
+    suspend fun deleteChatForUser(
+        chatId: String,
+        userId: String
+    )
 }

@@ -32,6 +32,8 @@ data class HomeState(
     val savedPostIds: List<String> = emptyList(),
     val savedPosts: List<Post> = emptyList(),
 
+    val selectedPost: Post? = null
+
 
 
 

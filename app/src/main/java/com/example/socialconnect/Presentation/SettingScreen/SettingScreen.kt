@@ -60,12 +60,12 @@ fun SettingsScreen(
         }
     }
 
-    Scaffold { padding ->
+
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
+
         ) {
 
             CustomAppBar(
@@ -106,7 +106,7 @@ fun SettingsScreen(
             )
         }
     }
-}
+
 @Composable
 fun SettingsItem(
     title: String,
