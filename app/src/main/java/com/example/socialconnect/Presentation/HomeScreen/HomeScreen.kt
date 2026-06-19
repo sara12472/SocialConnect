@@ -39,6 +39,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -75,6 +76,7 @@ import com.example.socialconnect.Presentation.HomeScreen.Component.HomeTopBar
 import com.example.socialconnect.Presentation.HomeScreen.Component.PostCard
 import com.example.socialconnect.Presentation.HomeScreen.Component.ProfileFloatingButton
 import com.example.socialconnect.Presentation.HomeScreen.Component.StoryRow
+import com.example.socialconnect.Presentation.SearchScreen.SearchViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -84,6 +86,7 @@ fun HomeScreen( navController: NavController,
 ) {
 
     val state = viewModel.state.collectAsState().value
+
 
 
     val context = LocalContext.current
@@ -246,6 +249,10 @@ fun HomeScreen( navController: NavController,
                             }
 
                             3 -> {
+                                navController.navigate(Screen.SearchScreen.route)
+                                //showSearchSheet = true
+                            }
+                            4 -> {
                                 navController.navigate(Screen.SettingScreen.route)
                             }
                         }
@@ -284,7 +291,7 @@ fun HomeScreen( navController: NavController,
                     onReplyClick = { viewModel.startReply(it) },
                     replyingToCommentId = state.replyingToCommentId,
                     replyingToUserName = state.replyingToUserName,
-                    repliesMap = state.repliesMap,   // 👈 ADD THIS
+                    repliesMap = state.repliesMap,
                     onClearReply = { viewModel.clearReply() }
                 )
             }
@@ -330,6 +337,65 @@ fun HomeScreen( navController: NavController,
             )
         }
     }
+
+}
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SearchBottomSheet(
+    onDismiss: () -> Unit,
+    onUserClick: (String) -> Unit,
+    viewModel: SearchViewModel = hiltViewModel()
+) {
+
+    val state = viewModel.state.collectAsState().value
+
+    ModalBottomSheet(
+        onDismissRequest = onDismiss
+    ) {
+
+        Column(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
+
+            OutlinedTextField(
+                value = state.query,
+                onValueChange = viewModel::onQueryChange,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp),
+                placeholder = { Text("Search users...") }
+            )
+
+            LazyColumn {
+
+                items(state.users) { user ->
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                onUserClick(user.uid)
+                            }
+                            .padding(12.dp)
+                    ) {
+
+                        AsyncImage(
+                            model = user.profileImage,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(CircleShape)
+                        )
+
+                        Spacer(Modifier.width(10.dp))
+
+                        Column {
+                            Text(user.name)
+                            Text("@${user.username}")
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -363,7 +429,7 @@ fun CommentBottomSheet(
                 .fillMaxHeight(0.65f)
         ) {
 
-            // ================= TITLE =================
+
             Text(
                 text = "Comments",
                 style = MaterialTheme.typography.titleLarge,
@@ -422,7 +488,7 @@ fun CommentBottomSheet(
 
                                 Text(
                                     text = comment.userName,
-                                    style = MaterialTheme.typography.labelSmall
+                                    style = MaterialTheme.typography.bodyMedium
                                 )
 
                                 Spacer(modifier = Modifier.height(4.dp))

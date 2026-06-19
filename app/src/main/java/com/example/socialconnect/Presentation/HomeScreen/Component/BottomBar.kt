@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Message
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.SmartDisplay
 import androidx.compose.material3.Icon
@@ -82,11 +83,21 @@ fun BottomBar(
                     )
                 }
             )
-
-
             NavigationBarItem(
                 selected = selectedIndex == 3,
                 onClick = { onItemSelected(3) },
+                icon = {
+                    Icon(
+                        imageVector = Icons.Outlined.Search,
+                        contentDescription = "Search"
+                    )
+                }
+            )
+
+
+            NavigationBarItem(
+                selected = selectedIndex == 4,
+                onClick = { onItemSelected(4) },
 
                 icon = {
                     Icon(

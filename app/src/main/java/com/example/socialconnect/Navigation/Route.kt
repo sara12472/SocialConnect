@@ -9,6 +9,7 @@ sealed class Screen(val route: String) {
     object ForgetPasswordScreen : Screen("ForgotPasswordScreen")
     object HomeScreen : Screen("HomeScreen")
     object ChatScreen : Screen("ChatScreen")
+    object SearchScreen : Screen("SearchScreen")
     object ConversationScreen :
         Screen("conversation_screen/{otherUserId}") {
 

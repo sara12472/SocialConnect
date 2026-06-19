@@ -15,6 +15,7 @@ import com.example.socialconnect.Presentation.CreatePost.CreatePostScreen
 import com.example.socialconnect.Presentation.EditProfileScreen.EditProfileScreen
 import com.example.socialconnect.Presentation.ForgotPassword.ForgetPasswordScreen
 import com.example.socialconnect.Presentation.HomeScreen.HomeScreen
+import com.example.socialconnect.Presentation.SearchScreen.SearchScreen
 import com.example.socialconnect.Presentation.LoginSCreen.LoginScreen
 import com.example.socialconnect.Presentation.ProfileScreen.ProfileScreen
 import com.example.socialconnect.Presentation.SavedPost.SavedPostScreen
@@ -56,6 +57,14 @@ fun AppNavigation() {
         }
         composable(Screen.NotificationScreen.route){
            NotificationScreen(navController)
+        }
+        composable(
+            route = Screen.SearchScreen.route
+        ) {
+
+            SearchScreen(
+                navController = navController
+            )
         }
         composable(Screen.SavedPostScreen.route){
           SavedPostScreen(navController)

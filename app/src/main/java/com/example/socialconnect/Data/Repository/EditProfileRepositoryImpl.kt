@@ -96,5 +96,22 @@ class EditProfileRepositoryImpl @Inject constructor(
             .update("fcmToken", token)
             .await()
     }
+    override suspend fun searchUsers(query: String): List<User> {
+
+        return try {
+
+            firestore.collection("users")
+                .orderBy("username")
+                .startAt(query)
+                .endAt(query + "\uf8ff")
+                .get()
+                .await()
+                .documents
+                .mapNotNull { it.toObject(User::class.java) }
+
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
 
 }

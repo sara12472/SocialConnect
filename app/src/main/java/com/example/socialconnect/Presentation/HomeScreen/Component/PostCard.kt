@@ -318,7 +318,7 @@ fun PostCard(
                         append("  ")
                         append(post.caption)
                     },
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(
                         start = 10.dp,
                         end = 16.dp,

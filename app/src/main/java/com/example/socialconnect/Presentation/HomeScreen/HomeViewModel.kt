@@ -48,11 +48,6 @@ class HomeViewModel @Inject constructor(
     private val unSavePostUseCase: UnSavePostUseCase,
     private val getSavedPostsUseCase: GetSavedPostsUseCase,
     private val deletePostUseCase: DeletePostUseCase,
-
-
-
-
-
     ) : ViewModel() {
 
     init {
@@ -217,7 +212,6 @@ class HomeViewModel @Inject constructor(
 
                 _state.value = _state.value.copy(comments = comments)
 
-                // replies ko ALAG collect karo (important fix)
                 comments.forEach { comment ->
 
                     viewModelScope.launch {
@@ -281,7 +275,7 @@ class HomeViewModel @Inject constructor(
                 addCommentUseCase(comment)
             }
 
-            // FIND POST OWNER
+
             val postOwnerId =
                 state.posts.firstOrNull { it.postId == postId }?.userId
 
@@ -320,7 +314,7 @@ class HomeViewModel @Inject constructor(
             sendNotificationUseCase(notification)
 
 
-            // RESET UI STATE
+
             _state.value = _state.value.copy(
                 commentText = "",
                 replyingToCommentId = null,

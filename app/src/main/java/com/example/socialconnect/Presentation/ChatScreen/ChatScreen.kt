@@ -36,8 +36,7 @@ import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 
 import androidx.compose.ui.graphics.Color
-
-
+import com.example.socialconnect.Component.SearchBar
 
 
 @Composable
@@ -67,15 +66,11 @@ fun ChatScreen(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        OutlinedTextField(
+        SearchBar(
             value = "",
             onValueChange = {},
-            placeholder = { Text("Search") },
-            leadingIcon = { Icon(Icons.Default.Search, null) },
-            shape = RoundedCornerShape(50),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
+            placeholder = "Search chats...",
+            modifier = Modifier.padding(horizontal = 16.dp)
         )
 
         Spacer(modifier = Modifier.height(15.dp))
