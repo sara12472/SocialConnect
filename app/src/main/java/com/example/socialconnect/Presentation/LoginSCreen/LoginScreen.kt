@@ -28,6 +28,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.socialconnect.Component.AppButton
 import com.example.socialconnect.Component.AppTextField
+import com.example.socialconnect.Navigation.AppViewModel
 import com.example.socialconnect.Navigation.Screen
 import com.example.socialconnect.ui.theme.ElectricBlue
 import com.example.socialconnect.R
@@ -35,12 +36,15 @@ import com.example.socialconnect.R
 @Composable
 fun LoginScreen(
     navController: NavController,
-    viewModel: LoginViewModel = hiltViewModel()
+    appViewModel: AppViewModel,
+    viewModel: LoginViewModel = hiltViewModel(),
+
 ){
     val state = viewModel.state.collectAsState().value
 
     LaunchedEffect(state.success) {
         if (state.success) {
+            appViewModel.loadCurrentUser()
             navController.navigate(Screen.HomeScreen.route) {
                 popUpTo(Screen.LoginScreen.route) {
                     inclusive = true
@@ -155,12 +159,4 @@ fun LoginScreen(
         }
     }
 
-}
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun ShowLoginPreview(){
-    val navController= rememberNavController()
-    val viewModel: LoginViewModel=hiltViewModel()
-
-    LoginScreen(navController,viewModel)
 }

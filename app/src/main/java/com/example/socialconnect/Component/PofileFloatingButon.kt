@@ -1,8 +1,7 @@
-package com.example.socialconnect.Presentation.HomeScreen.Component
+package com.example.socialconnect.Component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
@@ -33,7 +32,7 @@ fun ProfileFloatingButton(
 
         if (image.isNullOrEmpty()) {
             Image(
-                painter = painterResource(id = R.drawable.avatar), // your default avatar
+                painter = painterResource(id = R.drawable.avatar),
                 contentDescription = "Default Avatar",
                 modifier = Modifier
                     .size(55.dp)

@@ -19,7 +19,6 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.socialconnect.Component.SearchBar
 import com.example.socialconnect.Navigation.Screen
-import com.example.socialconnect.Presentation.SearchScreen.SearchViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -54,10 +54,11 @@ object FirebaseModule {
     @Singleton
     fun provideAuthRepository(
         auth: FirebaseAuth,
-        firestore: FirebaseFirestore
+        firestore: FirebaseFirestore,
+        googleSignInClient: GoogleSignInClient
     ): AuthRepository {
 
-        return AuthRepositoryImpl(auth, firestore)
+        return AuthRepositoryImpl(auth, firestore,googleSignInClient)
     }
     @Provides
     @Singleton

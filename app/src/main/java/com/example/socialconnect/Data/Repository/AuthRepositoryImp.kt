@@ -4,6 +4,7 @@ package com.example.socialconnect.Data.Repository
 import com.example.socialconnect.Core.Resource
 import com.example.socialconnect.Data.Model.User
 import com.example.socialconnect.Domain.Repository.AuthRepository
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
@@ -14,7 +15,8 @@ import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth,
-    private val firestore: FirebaseFirestore
+    private val firestore: FirebaseFirestore,
+    private val googleSignInClient: GoogleSignInClient
 ) : AuthRepository {
     override suspend fun signup(
         name: String,
@@ -119,6 +121,7 @@ class AuthRepositoryImpl @Inject constructor(
     }
     override suspend fun logout() {
         auth.signOut()
+        googleSignInClient.signOut().await()
     }
     override suspend fun updateNotificationSetting(userId: String, enabled: Boolean) {
 

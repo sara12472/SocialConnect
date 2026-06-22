@@ -1,6 +1,7 @@
 package com.example.socialconnect.Presentation.ProfileScreen
 
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.socialconnect.Domain.UseCases.FollowUseCase.FollowUserUseCase
@@ -44,9 +45,12 @@ class ProfileViewModel @Inject constructor(
     fun loadUser(profileUserId: String) {
 
         viewModelScope.launch {
+            Log.d("ProfileViewModel", "loadUser called with: $profileUserId")
 
             val currentUserId = getCurrentUserIdUseCase()
+            Log.d("ProfileViewModel", "currentUserId from useCase: $currentUserId")
             val user = getUserUseCase(profileUserId)
+            Log.d("ProfileViewModel", "Fetched user: ${user.username}, profileImage: ${user.profileImage}")
 
             var following = false
 
@@ -65,6 +69,7 @@ class ProfileViewModel @Inject constructor(
                 currentUserId = currentUserId ?: "",
                 isOwnProfile = currentUserId == profileUserId,
                 isFollowing = following,
+
 
                 name = user.name,
                 username = user.username,
@@ -87,7 +92,7 @@ class ProfileViewModel @Inject constructor(
     fun onFollowClick(targetUserId: String) {
         viewModelScope.launch {
 
-            val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: return@launch
+            val currentUserId = getCurrentUserIdUseCase() ?: return@launch
             val current = _state.value.isFollowing
 
             if (current) {
@@ -97,7 +102,6 @@ class ProfileViewModel @Inject constructor(
             }
 
             loadFollowCounts(targetUserId)
-
             _state.value = _state.value.copy(isFollowing = !current)
         }
     }

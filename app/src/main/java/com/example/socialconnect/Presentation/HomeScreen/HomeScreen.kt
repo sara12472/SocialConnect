@@ -5,25 +5,20 @@ import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
@@ -39,7 +34,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -50,33 +44,28 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.example.socialconnect.R
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.socialconnect.Component.AppTextField
+import com.example.socialconnect.Component.BottomBar
+import com.example.socialconnect.Component.FloatingBottomBar
+import com.example.socialconnect.Component.ProfileFloatingButton
 import com.example.socialconnect.Data.Model.Comment
 import com.example.socialconnect.Data.Model.CommentReply
 import com.example.socialconnect.Data.Model.Post
-import com.example.socialconnect.Data.Model.dummyStories
 import com.example.socialconnect.Navigation.Screen
-import com.example.socialconnect.Presentation.HomeScreen.Component.BottomBar
 import com.example.socialconnect.Presentation.HomeScreen.Component.HomeTopBar
 import com.example.socialconnect.Presentation.HomeScreen.Component.PostCard
-import com.example.socialconnect.Presentation.HomeScreen.Component.ProfileFloatingButton
-import com.example.socialconnect.Presentation.HomeScreen.Component.StoryRow
-import com.example.socialconnect.Presentation.SearchScreen.SearchViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -123,7 +112,8 @@ fun HomeScreen( navController: NavController,
     }
 
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize().padding(bottom = 10.dp),
+        contentAlignment = Alignment.BottomCenter
     ) {
 
         Scaffold(
@@ -217,85 +207,40 @@ fun HomeScreen( navController: NavController,
         }
 
         // FLOATING BOTTOM BAR
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter)
-                .padding(horizontal = 25.dp, vertical = 12.dp),
+       /* FloatingBottomBar(
+            selectedIndex = state.selectedTab,
+            profileImage = state.profileImage,
+            onItemSelected = { index ->
 
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-
-            Row() {
-                BottomBar(
-                    selectedIndex = state.selectedTab,
-                    onItemSelected = { index ->
-
-                        viewModel.onTabSelected(index)
-
-                        when(index) {
-
-                            0 -> {
-                                // Home
-                            }
-
-                            1 -> {
-                                navController.navigate(Screen.ChatScreen.route)
-                            }
-
-                            2 -> {
-                                // Reels/Video Screen
-                            }
-
-                            3 -> {
-                                navController.navigate(Screen.SearchScreen.route)
-                                //showSearchSheet = true
-                            }
-                            4 -> {
-                                navController.navigate(Screen.SettingScreen.route)
-                            }
-                        }
-                    },
-                    modifier = Modifier.weight(1f, fill = false)
-
-
-                )
-                Spacer(modifier = Modifier.width(5.dp))
-
-                Row() {
-                    ProfileFloatingButton(
-                        image = state.profileImage,
-                        onClick = {
-                            navController.navigate(
-                                Screen.ProfileScreen.createRoute(
-                                    state.currentUserId
-                                )
-                            )
-                        }
-                    )
+                when (index) {
+                    0 -> navController.navigate(Screen.HomeScreen.route)
+                    1 -> navController.navigate(Screen.ChatScreen.route)
+                    2 -> navController.navigate(Screen.SearchScreen.route)
+                    3 -> navController.navigate(Screen.SettingScreen.route)
                 }
-
-
-            }
-
-            if (state.showCommentsSheet) {
-
-                CommentBottomSheet(
-                    comments = state.comments,
-                    commentText = state.commentText,
-                    currentUserProfile = state.profileImage,
-                    onTextChange = viewModel::onCommentTextChange,
-                    onSend = { viewModel.sendComment() },
-                    onDismiss = { viewModel.closeComments() },
-                    onReplyClick = { viewModel.startReply(it) },
-                    replyingToCommentId = state.replyingToCommentId,
-                    replyingToUserName = state.replyingToUserName,
-                    repliesMap = state.repliesMap,
-                    onClearReply = { viewModel.clearReply() }
+            },
+            onProfileClick = {
+                navController.navigate(
+                    Screen.ProfileScreen.createRoute(state.currentUserId)
                 )
             }
-        }
+        )*/
+    }
+    if (state.showCommentsSheet) {
+
+        CommentBottomSheet(
+            comments = state.comments,
+            commentText = state.commentText,
+            currentUserProfile = state.profileImage,
+            onTextChange = viewModel::onCommentTextChange,
+            onSend = { viewModel.sendComment() },
+            onDismiss = { viewModel.closeComments() },
+            onReplyClick = { viewModel.startReply(it) },
+            replyingToCommentId = state.replyingToCommentId,
+            replyingToUserName = state.replyingToUserName,
+            repliesMap = state.repliesMap,
+            onClearReply = { viewModel.clearReply() }
+        )
     }
     if(showPostOptions && selectedPost != null){
 
@@ -339,64 +284,7 @@ fun HomeScreen( navController: NavController,
     }
 
 }
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun SearchBottomSheet(
-    onDismiss: () -> Unit,
-    onUserClick: (String) -> Unit,
-    viewModel: SearchViewModel = hiltViewModel()
-) {
 
-    val state = viewModel.state.collectAsState().value
-
-    ModalBottomSheet(
-        onDismissRequest = onDismiss
-    ) {
-
-        Column(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
-
-            OutlinedTextField(
-                value = state.query,
-                onValueChange = viewModel::onQueryChange,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(12.dp),
-                placeholder = { Text("Search users...") }
-            )
-
-            LazyColumn {
-
-                items(state.users) { user ->
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                onUserClick(user.uid)
-                            }
-                            .padding(12.dp)
-                    ) {
-
-                        AsyncImage(
-                            model = user.profileImage,
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(40.dp)
-                                .clip(CircleShape)
-                        )
-
-                        Spacer(Modifier.width(10.dp))
-
-                        Column {
-                            Text(user.name)
-                            Text("@${user.username}")
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

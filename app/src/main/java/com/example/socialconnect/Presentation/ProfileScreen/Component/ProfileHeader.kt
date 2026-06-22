@@ -64,7 +64,7 @@ fun ProfileHeader(
         // 🔵 BIO
         Text(
             text = bio,
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Center
         )

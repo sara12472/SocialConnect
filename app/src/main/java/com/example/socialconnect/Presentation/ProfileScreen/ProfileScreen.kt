@@ -53,6 +53,7 @@ import coil.compose.AsyncImage
 import androidx.media3.common.MediaItem
 import com.example.socialconnect.Component.AppButton
 import com.example.socialconnect.Component.VideoThumbnailItem
+import com.example.socialconnect.Navigation.AppViewModel
 import com.example.socialconnect.Navigation.Screen
 import com.example.socialconnect.Presentation.ProfileScreen.Component.ProfileHeader
 import com.example.socialconnect.Presentation.ProfileScreen.Component.ProfileStatsSection
@@ -62,17 +63,19 @@ import com.example.socialconnect.Presentation.ProfileScreen.Component.ProfileTop
 @Composable
 fun ProfileScreen(
     navController: NavController,
+  userId: String,
     viewModel: ProfileViewModel = hiltViewModel(),
 
     ) {
 
 
+
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
-    val userId = navController
+  /* val userId = navController
             .currentBackStackEntry
         ?.arguments
-        ?.getString("userId")
+        ?.getString("userId")*/
 
     LaunchedEffect(userId) {
         if (!userId.isNullOrEmpty()) {
@@ -285,17 +288,7 @@ fun ProfileScreen(
         }
     }
 }
-@Preview
-@Composable
-fun ShowProfileScreen(){
-   val viewModel: ProfileViewModel = hiltViewModel()
-    val navController= rememberNavController()
 
-    ProfileScreen(
-        navController,
-        viewModel
-    )
-}
 
 
 fun shareProfile(

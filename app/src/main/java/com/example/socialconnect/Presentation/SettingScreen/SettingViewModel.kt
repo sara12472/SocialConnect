@@ -76,6 +76,9 @@ class SettingsViewModel @Inject constructor(
             updateFcmTokenUseCase(userId, token)
         }
     }
+    fun resetLogoutState() {
+        _state.value = _state.value.copy(isLoggedOut = false)
+    }
 
 
 }

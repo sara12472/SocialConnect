@@ -41,6 +41,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.socialconnect.Navigation.AppViewModel
 import com.example.socialconnect.Navigation.Screen
 import com.example.socialconnect.R
 
@@ -48,15 +49,24 @@ import com.example.socialconnect.R
 @Composable
 fun SettingsScreen(
     navController: NavController,
-    viewModel: SettingsViewModel = hiltViewModel()
+    appViewModel: AppViewModel,
+    viewModel: SettingsViewModel = hiltViewModel(),
+
+
 ) {
     val state = viewModel.state.collectAsState().value
 
     LaunchedEffect(state.isLoggedOut) {
         if (state.isLoggedOut) {
+            appViewModel.clearUser()
+
             navController.navigate(Screen.LoginScreen.route) {
-                popUpTo(0)
+                popUpTo(navController.graph.startDestinationId) {
+                    inclusive = true
+                }
+                launchSingleTop = true
             }
+            viewModel.resetLogoutState()
         }
     }
 
