@@ -17,7 +17,6 @@ The project follows industry-standard Android development practices using **Clea
 * User Sign Up
 * User Login
 * Firebase Authentication
-* Secure user session handling
 
 ### 📝 Post Management
 
@@ -39,7 +38,6 @@ The project follows industry-standard Android development practices using **Clea
 * Real-time notifications
 * Like notifications
 * Comment notifications
-* Follow notifications
 
 ---
 
